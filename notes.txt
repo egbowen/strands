@@ -1,0 +1,6 @@
+use sudoku as an outline
+make object that contains a board of size 48 (i think) and a solution array
+    - this is the input to our "main" runner
+MAKE IT SO WE RUN SOMETHING
+- measure number of recursion
+- set up the needed functions
