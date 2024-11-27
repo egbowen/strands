@@ -7,12 +7,14 @@ SOLUTION = boards.solution_11_19 #compare against this is global?
 WIDTH = 6
 HEIGHT = 8
 MAX_SIZE = 10
+MAX_LEN = 10
         
 def dfsSolver(board: List[int]):
     '''
     solver is DFS or custom
     '''
     # display board
+    
     
     domains = [] #all possible word combinations
     neighbors = [[] for i in range(WIDTH*HEIGHT)] #letters on each side (should we prune this as we fill in?)
@@ -27,13 +29,40 @@ def dfsSolver(board: List[int]):
     return solution
 
 def getDomains(board, neighbors):
-    #ass possible combinations of letters
-    #need the neighbors to get the domains
-    return
+    '''
+    Get all possible combinations of letters from 4 letters to MAX_LEN
     
+    Args:
+        board List(char): List of letters at ea position
+        neighbors: List(List(int)): indices of neighbors
+    '''
+    neighbors = getNeighbors() #this is the same for all boards
+    domains = []
+    for i in range(len(board)):
+        domains.extend(explore(i, [i]))
+    return domains
+
+def explore(index:int, path:List[int], neighbors):
+    '''
+    Recursive function to explore all possible paths
+    Used in getDomains
     
+    Args:
+        index (int): index at which we are at in the path
+        path List(int): indices of letters currently in the path
+        neighbors List(List(int)): indices for each neighbor
+    '''
+    if len(path) > MAX_LEN:
+        return
+    result = [tuple(path)]
     
-def getNeighbors(board:List[int]):
+    for neighbor in neighbors[index]:
+        if neighbor not in path:
+            result.extend(explore(neighbor, path + [neighbor], neighbors))
+            
+    return result
+    
+def getNeighbors():
     moves = [-1, #left
              1, #right
              -6, #up
@@ -49,8 +78,10 @@ def getNeighbors(board:List[int]):
         for m in moves:
             single_neighbor.append(i + m)
         neighbors.append(single_neighbor)
+    return neighbors
     
      
+
 
 
 
