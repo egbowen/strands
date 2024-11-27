@@ -15,20 +15,14 @@ def dfsSolver(board: List[int]):
     '''
     # display board
     
-    
-    domains = [] #all possible word combinations
-    neighbors = [[] for i in range(WIDTH*HEIGHT)] #letters on each side (should we prune this as we fill in?)
-    
-    #get domains
-        #recurse to get all possible combos of letters 
-    
-    #get neighbors
-    
-     
-    
-    return solution
 
-def getDomains(board, neighbors):
+    neighbors = getNeighbors() #letters on each side (should we prune this as we fill in?) 
+    # domains = getDomains(neighbors) #all possible word combinations
+    print(neighbors)
+    
+    return 
+
+def getDomains(neighbors):
     '''
     Get all possible combinations of letters from 4 letters to MAX_LEN
     
@@ -36,10 +30,9 @@ def getDomains(board, neighbors):
         board List(char): List of letters at ea position
         neighbors: List(List(int)): indices of neighbors
     '''
-    neighbors = getNeighbors() #this is the same for all boards
     domains = []
-    for i in range(len(board)):
-        domains.extend(explore(i, [i]))
+    for i in range(WIDTH*HEIGHT):
+        domains.extend(explore(i, [i], neighbors))
     return domains
 
 def explore(index:int, path:List[int], neighbors):
@@ -53,7 +46,7 @@ def explore(index:int, path:List[int], neighbors):
         neighbors List(List(int)): indices for each neighbor
     '''
     if len(path) > MAX_LEN:
-        return
+        return []
     result = [tuple(path)]
     
     for neighbor in neighbors[index]:
@@ -63,30 +56,36 @@ def explore(index:int, path:List[int], neighbors):
     return result
     
 def getNeighbors():
-    moves = [-1, #left
-             1, #right
-             -6, #up
-             6, #down
-             -5, #upright
-             5, #downleft
-             -7, #upleft
-             7] #downright
-    
+    moves = [-1, 1, -WIDTH, WIDTH, -WIDTH - 1, -WIDTH + 1, WIDTH - 1, WIDTH + 1]
     neighbors = []
-    for i in range (WIDTH*HEIGHT):
+    
+    for i in range(WIDTH * HEIGHT):
+        row = i // WIDTH
+        col = i % WIDTH
         single_neighbor = []
+
         for m in moves:
-            single_neighbor.append(i + m)
+            neighbor = i + m
+            if 0 <= neighbor < WIDTH * HEIGHT:
+                neighbor_row = neighbor // WIDTH
+                neighbor_col = neighbor % WIDTH
+                
+                # Only add neighbors where row and column are within +-1 range of current
+                if abs(neighbor_row - row) <= 1 and abs(neighbor_col - col) <= 1:
+                    single_neighbor.append(neighbor)
+        
         neighbors.append(single_neighbor)
+    
     return neighbors
     
      
+     
+dfsSolver(board)  
+     
+     
 
 
-
-
-
-
+##################################################3
 def customSolver(board: List[int]):
     
     return solution
