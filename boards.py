@@ -22,8 +22,10 @@ solution_11_19 = [
 
 clue_11_19 = "Pick-Ups"
 
+test_board = ["a", "b", "c", "d"]
+
 
 # code to check the boards
-for i in solution_11_19:
-    for num in i:
-        print(day_11_19[num])
+# for i in solution_11_19:
+#     for num in i:
+#         print(day_11_19[num])
