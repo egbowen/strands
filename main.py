@@ -59,7 +59,7 @@ def explore(index: int, path: List[int], neighbors: List[List[int]]) -> List[Lis
         # when we have found all solutions
         if SOLUTION_COUNT == SOLUTION_TOT:
             print("Congrats! You found all the solutions!")
-            return
+            return 
         
         #get rid of the values in all neighbors
         new_neighbors = []
