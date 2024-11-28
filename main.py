@@ -4,13 +4,10 @@ from typing import Dict, List, Optional, Set, Tuple
 
 board = boards.day_11_19 #should not be global at some point 
 SOLUTION = boards.solution_11_19 #compare against this is global?
+SOLUTION_TOT = len(SOLUTION)
 WIDTH = 6
 HEIGHT = 8
-MAX_SIZE = 10
 MAX_LEN = 10
-
-MIN_ONE = 10000
-MAX_ONE = -1
 
 SOLUTION_COUNT = 0
         
@@ -54,10 +51,16 @@ def explore(index: int, path: List[int], neighbors: List[List[int]]) -> List[Lis
         return []
     
     #right now, this is checking every time we come across a path
-    if path in SOLUTION:
+    if path in SOLUTION :
         global SOLUTION_COUNT
         SOLUTION_COUNT += 1
         print(f"I found solution {SOLUTION_COUNT}! Path: {path}")
+        
+        # when we have found all solutions
+        if SOLUTION_COUNT == SOLUTION_TOT:
+            print("Congrats! You found all the solutions!")
+            return
+        
         #get rid of the values in all neighbors
         new_neighbors = []
         for n in neighbors:
