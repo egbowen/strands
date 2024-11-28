@@ -7,12 +7,14 @@ SOLUTION = boards.solution_11_19 #compare against this is global?
 WIDTH = 6
 HEIGHT = 8
 MAX_SIZE = 10
-MAX_LEN = 6
+MAX_LEN = 10
 
 MIN_ONE = 10000
 MAX_ONE = -1
+
+SOLUTION_COUNT = 0
         
-def dfsSolver(board: List[int]):
+def greedySolver(board: List[int]):
     '''
     solver is DFS or custom
     '''
@@ -51,6 +53,19 @@ def explore(index: int, path: List[int], neighbors: List[List[int]]) -> List[Lis
     if len(path) >= MAX_LEN:
         return []
     
+    #right now, this is checking every time we come across a path
+    if path in SOLUTION:
+        global SOLUTION_COUNT
+        SOLUTION_COUNT += 1
+        print(f"I found solution {SOLUTION_COUNT}! Path: {path}")
+        #get rid of the values in all neighbors
+        new_neighbors = []
+        for n in neighbors:
+            # Create a new list excluding the values that are in the path
+            new_n = [val for val in n if val not in path]
+            new_neighbors.append(new_n)
+        neighbors = new_neighbors
+    
     all_paths = []
     if 4 <= len(path) <= MAX_LEN:
         all_paths.append(path)
@@ -58,7 +73,7 @@ def explore(index: int, path: List[int], neighbors: List[List[int]]) -> List[Lis
 
     for neighbor in neighbors[index]:
         if neighbor not in path:
-            print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
+            #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
             new_path = path + [neighbor]  
             all_paths.extend(explore(neighbor, new_path, neighbors))  # Add all resulting paths to the list
     
@@ -89,7 +104,7 @@ def getNeighbors():
     
      
 # run    
-dfsSolver(board)  
+greedySolver(board)  
      
      
 
