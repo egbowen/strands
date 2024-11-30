@@ -112,18 +112,83 @@ greedySolver(board)
      
 
 ##################################################3
-def customSolver(board: List[int]):
-    
-    return solution
+def generateDomains(board: List[str], neighbors: List{List{int}}) -> List[List[str]]: 
+    '''
+    generate domain of possible words for each letter tile
+    '''
+    domains = [] 
+    for i in range(WIDTH * HEIGHT): 
+        all_paths = explore(i, [i], neighbors) #explore paths starting at index 'i' 
+        words = ["".join(board[j] for j in path) for path in all_paths] 
+        domains.append(words) 
+    return domains 
 
+def customSolver(board: List[str], neighbors: List[List[int]], solution: List[List[int]]): 
+    '''
+    custom solver modeled as CSP
+    '''
+    domains = generateDomains(board, neighbors)
+    assignment = {} 
+
+    def backtrack(): 
+        if len(assignment) == WIDTH * HEIGHT: 
+            return assignment 
+        
+        #select an unassigned tile 
+        var = selectUnassignedTile(domains, assignment) 
+        if var is None: 
+            return None 
+        
+        #try assigning word from its domain 
+        for word in domains[var]: 
+            if isConsistent(word, assignment): 
+                #assign and propagate constraints 
+                assignment[var] = word 
+                propagateConstraints(domains, word) 
+
+                result = backtrack() 
+                if result is not None: 
+                    return result 
+                
+                del assignment[var] 
+        return None 
+
+    return backtrack() 
+
+def selectUnassignedTile(domains: List[List[str]], assignment: Dict[int, str]) -> Optional[int]: 
+    '''
+    select next UNASSIGNED tile... use heuristic? 
+    '''
+    for i in range(WIDTH * HEIGHT): 
+        if i not in assignment: 
+            return i 
+    return None 
+
+def isConsistent(word: str, assignment: Dict[int, str]) -> bool: 
+    '''
+    check consistency, apply constraints 
+    '''
+    # check letters are adjacent, not reused from already verified words 
+    return True 
+
+def propagateConstraints(domains: List[List[str]], word: str): 
+    ''' 
+    propagate constraints after assigning a word
+    ex: remove letters of verified word from other domains, 
+    '''
+    pass
     
-def displayBoard(self): 
+def displayBoard(board: List[str]): 
     '''
     function to print board and display letters
     '''
-    #print " | " and join with row
-    #print " _ " and join with column
-    # or just have letters in grid..
+    print("\nCurrent Board:") 
+    print("-" * (WIDTH * 4 + 1)) #horizontal border 
+    for i in range(HEIGHT): 
+        row = board[i * WIDTH:(i + 1) * WIDTH] 
+        print("| " + " | ".join(row) + " |") # rows with letters 
+        print("_" * (WIDTH * 4 + 1)) #horizontal border
+
     
 
         
