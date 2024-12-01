@@ -138,8 +138,6 @@ optimized DFS:
 '''
 
 
-
-
 def generateDomains(board: List[str], neighbors: List[List[int]]): 
     '''
     generate domain of possible words for each letter tile
