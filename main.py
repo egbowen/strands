@@ -79,7 +79,7 @@ def explore(index: int, path: List[int], neighbors: List[List[int]]) -> List[Lis
             #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
             new_path = path + [neighbor]  
             all_paths.extend(explore(neighbor, new_path, neighbors))  # Add all resulting paths to the list
-    
+
     return all_paths
     
 def getNeighbors():
@@ -105,14 +105,42 @@ def getNeighbors():
     
     return neighbors
     
-     
 # run    
 greedySolver(board)  
      
      
 
-##################################################3
-def generateDomains(board: List[str], neighbors: List{List{int}}) -> List[List[str]]: 
+
+
+
+
+##################################################
+
+'''
+Liz's notes:
+
+DFS SOLVER:
+    done!
+
+CSP solver: 
+    what we want to do:
+    use word rules to generate domains that are valid words
+        we dont explore paths that obviously lead to invalid words
+    tbh i'm still struggling with the CSP way as working which is 
+    somewhat contridictary to our origional proposal
+        -i think we should go to office hours (i can also just go)
+        to ask linderman some q's about it 
+        
+optimized DFS:
+    i think this is likely to be the best solver
+    we basically use work rules to chop off paths for future words
+        only follow legit word combos 
+'''
+
+
+
+
+def generateDomains(board: List[str], neighbors: List[List[int]]): 
     '''
     generate domain of possible words for each letter tile
     '''
@@ -122,6 +150,7 @@ def generateDomains(board: List[str], neighbors: List{List{int}}) -> List[List[s
         words = ["".join(board[j] for j in path) for path in all_paths] 
         domains.append(words) 
     return domains 
+
 
 def customSolver(board: List[str], neighbors: List[List[int]], solution: List[List[int]]): 
     '''
