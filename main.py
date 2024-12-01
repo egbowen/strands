@@ -10,110 +10,121 @@ HEIGHT = 8
 MAX_LEN = 10
 
 SOLUTION_COUNT = 0
+
+class dfsSimple:
+    def __init__(self, board, solution):
+        self.board = board  
+        self.solution = solution
+        self.solution_tot = len(solution)
+        self.solution_count = 0
+    
+    def greedySolver(self, board: List[int]):
+        '''
+        solver is DFS or custom
+        '''
+        # display board
+        neighbors = self.getNeighbors() #letters on each side (should we prune this as we fill in?) 
+        domains = self.getDomains(neighbors) #all possible word combinations
         
-def greedySolver(board: List[int]):
-    '''
-    solver is DFS or custom
-    '''
-    # display board
-    neighbors = getNeighbors() #letters on each side (should we prune this as we fill in?) 
-    domains = getDomains(neighbors) #all possible word combinations
-    
-    return 
+        return 
 
-def getDomains(neighbors):
-    '''
-    Get all possible combinations of letters from 4 letters to MAX_LEN
-    
-    Args:
-        board List(char): List of letters at ea position
-        neighbors: List(List(int)): indices of neighbors
-    '''
-    domains = []
-    for i in range(WIDTH*HEIGHT):
-        domains.append(explore(i, [i], neighbors))
-    return domains
-
-def explore(index: int, path: List[int], neighbors: List[List[int]]) -> List[List[int]]:
-    '''
-    Recursive function to explore all possible paths
-    Used in getDomains
-    
-    Args:
-        index (int): index at which we are at in the path
-        path (List[int]): indices of letters currently in the path
-        neighbors (List[List[int]]): indices for each neighbor
-    
-    Returns:
-        List[List[int]]: All possible paths explored from the current index
-    '''
-    if len(path) >= MAX_LEN:
-        return []
-    
-    #right now, this is checking every time we come across a path
-    if path in SOLUTION :
-        global SOLUTION_COUNT
-        SOLUTION_COUNT += 1
-        print(f"I found solution {SOLUTION_COUNT}! Path: {path}")
+    def getDomains(self, neighbors):
+        '''
+        Get all possible combinations of letters from 4 letters to MAX_LEN
         
-        # when we have found all solutions
-        if SOLUTION_COUNT == SOLUTION_TOT:
-            print("Congrats! You found all the solutions!")
-            return 
+        Args:
+            board List(char): List of letters at ea position
+            neighbors: List(List(int)): indices of neighbors
+        '''
+        domains = []
+        for i in range(WIDTH*HEIGHT):
+            domains.append(self.explore(i, [i], neighbors))
+        return domains
+
+    def explore(self, index: int, path: List[int], neighbors: List[List[int]]) -> List[List[int]]:
+        '''
+        Recursive function to explore all possible paths
+        Used in getDomains
         
-        #get rid of the values in all neighbors
-        # aka apply new constraint
-        new_neighbors = []
-        for n in neighbors:
-            # Create a new list excluding the values that are in the path
-            new_n = [val for val in n if val not in path]
-            new_neighbors.append(new_n)
-        neighbors = new_neighbors
-    
-    all_paths = []
-    
-    if 4 <= len(path) <= MAX_LEN:
-        all_paths.append(path)
-
-    for neighbor in neighbors[index]:
-        if neighbor not in path:
-            #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
-            new_path = path + [neighbor]  
-            all_paths.extend(explore(neighbor, new_path, neighbors))  # Add all resulting paths to the list
-
-    return all_paths
-    
-def getNeighbors():
-    moves = [-1, 1, -WIDTH, WIDTH, -WIDTH - 1, -WIDTH + 1, WIDTH - 1, WIDTH + 1]
-    neighbors = []
-    
-    for i in range(WIDTH * HEIGHT):
-        row = i // WIDTH
-        col = i % WIDTH
-        single_neighbor = []
-
-        for m in moves:
-            neighbor = i + m
-            if 0 <= neighbor < WIDTH * HEIGHT:
-                neighbor_row = neighbor // WIDTH
-                neighbor_col = neighbor % WIDTH
-                
-                # Only add neighbors where row and column are within +-1 range of current
-                if abs(neighbor_row - row) <= 1 and abs(neighbor_col - col) <= 1:
-                    single_neighbor.append(neighbor)
+        Args:
+            index (int): index at which we are at in the path
+            path (List[int]): indices of letters currently in the path
+            neighbors (List[List[int]]): indices for each neighbor
         
-        neighbors.append(single_neighbor)
+        Returns:
+            List[List[int]]: All possible paths explored from the current index
+        '''
+        if len(path) >= MAX_LEN:
+            return []
+        
+        #right now, this is checking every time we come across a path
+        if path in self.solution :
+            self.solution_count += 1
+            print(f"I found solution {self.solution_count}! Path: {path}")
+            
+            # when we have found all solutions
+            if self.solution_count == self.solution_tot:
+                print("Congrats! You found all the solutions!")
+                return 
+            
+            #get rid of the values in all neighbors
+            # aka apply new constraint
+            new_neighbors = []
+            for n in neighbors:
+                # Create a new list excluding the values that are in the path
+                new_n = [val for val in n if val not in path]
+                new_neighbors.append(new_n)
+            neighbors = new_neighbors
+        
+        all_paths = []
+        
+        if 4 <= len(path) <= MAX_LEN:
+            all_paths.append(path)
+
+        for neighbor in neighbors[index]:
+            if neighbor not in path:
+                #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
+                new_path = path + [neighbor]  
+                all_paths.extend(self.explore(neighbor, new_path, neighbors))  # Add all resulting paths to the list
+
+        return all_paths
+        
+    def getNeighbors(self):
+        moves = [-1, 1, -WIDTH, WIDTH, -WIDTH - 1, -WIDTH + 1, WIDTH - 1, WIDTH + 1]
+        neighbors = []
+        
+        for i in range(WIDTH * HEIGHT):
+            row = i // WIDTH
+            col = i % WIDTH
+            single_neighbor = []
+
+            for m in moves:
+                neighbor = i + m
+                if 0 <= neighbor < WIDTH * HEIGHT:
+                    neighbor_row = neighbor // WIDTH
+                    neighbor_col = neighbor % WIDTH
+                    
+                    # Only add neighbors where row and column are within +-1 range of current
+                    if abs(neighbor_row - row) <= 1 and abs(neighbor_col - col) <= 1:
+                        single_neighbor.append(neighbor)
+            
+            neighbors.append(single_neighbor)
+        
+        return neighbors
     
-    return neighbors
-    
-# run    
-greedySolver(board)  
-     
-     
+class DictionarySearch(dfsSimple):
+    def explore(self):
+        '''
+        Another solving algorithm where we check each word against possible words in the dictionary.
+        '''
+        pass
 
-
-
-
+class AC3Search(dfsSimple):
+    def explore(self):
+        '''
+        Another solving algorithm where use a modification of the AC3 algorithm
+        '''
+        pass
 
 ##################################################
 def displayBoard(board: List[str]): 
@@ -126,6 +137,12 @@ def displayBoard(board: List[str]):
         row = board[i * WIDTH:(i + 1) * WIDTH] 
         print("| " + " | ".join(row) + " |") # rows with letters 
         print("_" * (WIDTH * 4 + 1)) #horizontal border
+
+# run   
+displayBoard(board)
+dfs_solver = dfsSimple(board, SOLUTION)  
+dfs_solver.greedySolver(board) 
+
 
 
 
