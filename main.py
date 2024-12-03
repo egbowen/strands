@@ -112,12 +112,109 @@ class dfsSimple:
         
         return neighbors
     
+class WordRules(dfsSimple):
+    def __init__(self, board, solution):
+        super().__init__(board, solution)
+        
+    def word_rules_solver(self, board: List[int]):
+        #TODO: here incorporate the word rules into a DFS based solver 
+        pass
+        
+    
+    def check_for_vowel(self, path: List[int]) -> bool:
+        """
+        Make sure there is a vowel in the path
+
+        Args:
+            path (List[int]):
+
+        Returns:
+            bool: Value indicating there is a vowel in the path or that
+                we are in the first few letters
+        """
+        
+        if len(path) < 4:
+            return True
+        
+        vowels = {'a', 'e', 'i', 'o', 'u', 'y'}
+        return any(letter in vowels for letter in path)
+    
+    def check_bad_combos(self, path: List[int]) -> bool:
+        """
+        Check for 2 letter combinations that are unlikely or impossible
+        
+        Args:
+            path (List[int]): path we have followed on board
+
+        Returns:
+            bool: if the path is valid
+        """
+        # Unlikely two-letter combinations
+        two_letter_combos = { # compiled from generative AI
+            'bk', 'fq', 'jc', 'jt', 'mj', 'qh', 'qx', 'vj', 'wz', 'zh',
+            'bq', 'fv', 'jd', 'jv', 'mq', 'qj', 'qy', 'vk', 'xb', 'zj',
+            'bx', 'fx', 'jf', 'jw', 'mx', 'qk', 'qz', 'vm', 'xg', 'zn',
+            'cb', 'fz', 'jg', 'jx', 'mz', 'ql', 'sx', 'vn', 'xj', 'zq',
+            'cf', 'gq', 'jh', 'jy', 'pq', 'qm', 'sz', 'vp', 'xk', 'zr',
+            'cg', 'gv', 'jk', 'jz', 'pv', 'qn', 'tq', 'vq', 'xv', 'zs',
+            'cj', 'gx', 'jl', 'kq', 'px', 'qo', 'tx', 'vt', 'xz', 'zx',
+            'cp', 'hk', 'jm', 'kv', 'qb', 'qp', 'vb', 'vw', 'yq', 'cv',
+            'hv', 'jn', 'kx', 'qc', 'qr', 'vc', 'vx', 'yv', 'cw', 'hx',
+            'jp', 'kz', 'qd', 'qs', 'vd', 'vz', 'yz', 'cx', 'hz', 'jq',
+            'lq', 'qe', 'qt', 'vf', 'wq', 'zb', 'dx', 'iy', 'jr', 'lx',
+            'qf', 'qv', 'vg', 'wv', 'zc', 'fk', 'jb', 'js', 'mg', 'qg',
+            'qw', 'vh', 'wx', 'zg'
+        }
+        for i in range(len(path) - 1):
+            letter_pair = board[path[i]] + board[path[i + 1]]
+            
+            if letter_pair in two_letter_combos:
+                return False
+
+        return True
+    
+    def highest_freq_letter(self, index: int, my_neighbors: List[int]) -> int:
+        """
+        Out of the neighbors, gets the letter that occurs most 
+        in english language
+        Tell us which neighbor to go to next
+
+        Args:
+            index(int): index in the board at which we are choosing the best possible next letter
+            my_neighbors(List[int]): valid neighboring indices
+
+        Returns:
+            int: the index we should follow next
+        """
+        letter_freq = {
+            'E': 12.02, 'T': 9.10, 'A': 8.12, 'O': 7.68, 'I': 7.31, 'N': 6.95, 
+            'S': 6.28, 'R': 6.02, 'H': 5.92, 'D': 4.32, 'L': 3.98, 'U': 2.88, 
+            'C': 2.71, 'M': 2.61, 'F': 2.30, 'Y': 2.11, 'W': 2.09, 'G': 2.03, 
+            'P': 1.82, 'B': 1.49, 'V': 1.11, 'K': 0.69, 'X': 0.17, 'Q': 0.11, 
+            'J': 0.10, 'Z': 0.07
+        }
+        
+        best_neighbor = my_neighbors[0]
+        highest_freq = letter_freq.get(board[best_neighbor], 0)
+        for neighbor in my_neighbors:
+            letter = board[neighbor]
+            freq = letter_freq.get(letter, 0)
+            
+            if freq > highest_freq:
+                highest_freq = freq
+                best_neighbor = neighbor
+
+        return best_neighbor 
+    
+    
+    
 class DictionarySearch(dfsSimple):
     def explore(self):
         '''
         Another solving algorithm where we check each word against possible words in the dictionary.
         '''
         pass
+    
 
 class AC3Search(dfsSimple):
     def explore(self):
@@ -125,6 +222,10 @@ class AC3Search(dfsSimple):
         Another solving algorithm where use a modification of the AC3 algorithm
         '''
         pass
+
+
+
+
 
 ##################################################
 def displayBoard(board: List[str]): 
