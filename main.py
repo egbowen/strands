@@ -18,6 +18,7 @@ class dfsSimple:
         self.solution = solution
         self.solution_tot = len(solution)
         self.solution_count = 0
+        self.found_indices = []
     
     def greedySolver(self):
         '''
@@ -30,7 +31,8 @@ class dfsSimple:
         for i in range(WIDTH*HEIGHT):
             # self.explore(i, [i], neighbors)
             if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
-                self.explore(i, [i], neighbors)
+                if i not in self.found_indices:
+                    self.explore(i, [i], neighbors)
             else:
                 break
             
@@ -65,14 +67,10 @@ class dfsSimple:
                 if path in self.solution :
                     self.solution_count += 1
                     print(f"I found solution {self.solution_count}! Path: {path}")
-                    
-                    # when we have found all solutions
-                    if self.solution_count == self.solution_tot:
-                        print("Congrats! You found all the solutions!")
-                        found_something = True
-                        break
-                        # here we need to get out of everything
-                    
+                    self.found_indices += path
+                    found_something = True
+                    break
+                
                     #get rid of the values in all neighbors
                     new_neighbors = []
                     for n in neighbors:
@@ -82,7 +80,7 @@ class dfsSimple:
                     neighbors = new_neighbors
 
             for neighbor in neighbors[index]:
-                if neighbor not in path:
+                if neighbor not in path and neighbor not in self.found_indices:
                     #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
                     new_path = path + [neighbor]  
                     self.explore(neighbor, new_path, neighbors)
