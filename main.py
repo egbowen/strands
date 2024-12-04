@@ -278,17 +278,37 @@ class DictionarySearch(dfsSimple):
         nltk.download('words')
         self.dictionary = words.words()
 
-    def filter_words(self, prefix):
-        new_dict = self.dictionary
-        new_dict = list(filter(lambda x: x[:len(prefix)]==prefix, new_dict))
+    def filter_words(self, prefix: str, words: List[str]) -> List[str]:
+        new_dict = list(filter(lambda x: x[:len(prefix)]==prefix, words))
         return new_dict
 
-    def explore(self, ):
+    def dictionarySolver(self):
         '''
         Another solving algorithm where we check each word against possible words in the dictionary.
         '''
-        pass
-    
+        neighbors = self.getNeighbors()
+        for i in range(WIDTH*HEIGHT):
+            if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
+                if i not in self.found_indices:
+                    self.explore(i, [i], self.board[i], neighbors, self.dictionary)
+            else:
+                break
+            
+        print("You are done!")
+        if self.solution_count >= SOLUTION_TOT:
+            print("You solved the puzzle! Good job!")
+            return True
+        print("You did not solve the puzzle. Better luck next time :(")
+        return False 
+
+    def explore(self, index: int, path: List[int], curr_prefix: str, neighbors: List[List[int]], words: List[str]) -> List[List[int]]:
+        if path in self.solution:
+            return path
+        curr_dict = self.filter_words(words, curr_prefix)
+        for neighbor in neighbors:
+            #recurse
+            break
+
 
 class AC3Search(dfsSimple):
     def explore(self):
