@@ -2,6 +2,8 @@
 import boards
 from typing import Dict, List, Optional, Set, Tuple
 import time
+import nltk
+from nltk.corpus import words
 
 board = boards.day_11_19 #should not be global at some point 
 SOLUTION = boards.solution_11_19 #compare against this is global?
@@ -271,7 +273,17 @@ class WordRules(dfsSimple):
     
     
 class DictionarySearch(dfsSimple):
-    def explore(self):
+    def __init__(self, board, solution):
+        super().__init__(board, solution)
+        nltk.download('words')
+        self.dictionary = words.words()
+
+    def filter_words(self, prefix):
+        new_dict = self.dictionary
+        new_dict = list(filter(lambda x: x[:len(prefix)]==prefix, new_dict))
+        return new_dict
+
+    def explore(self, ):
         '''
         Another solving algorithm where we check each word against possible words in the dictionary.
         '''
