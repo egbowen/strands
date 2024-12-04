@@ -70,14 +70,6 @@ class dfsSimple:
                     self.found_indices += path
                     found_something = True
                     break
-                
-                    #get rid of the values in all neighbors
-                    new_neighbors = []
-                    for n in neighbors:
-                        # Create a new list excluding the values that are in the path
-                        new_n = [val for val in n if val not in path]
-                        new_neighbors.append(new_n)
-                    neighbors = new_neighbors
 
             for neighbor in neighbors[index]:
                 if neighbor not in path and neighbor not in self.found_indices:
@@ -116,11 +108,13 @@ class WordRules(dfsSimple):
         
     def wordRulesSolver(self):
         neighbors = dfsSimple.getNeighbors(self)
-           
+    
         #run the tests
         for i in range(WIDTH*HEIGHT):
+            # self.explore(i, [i], neighbors)
             if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
-                self.explore(i, [i], neighbors)
+                if i not in self.found_indices:
+                    self.explore(i, [i], neighbors)
             else:
                 break
             
@@ -129,11 +123,12 @@ class WordRules(dfsSimple):
             print("You solved the puzzle! Good job!")
             return True
         print("You did not solve the puzzle. Better luck next time :(")
-        return False 
+        return False
         
     def explore(self, index: int, path: List[int], neighbors: List[List[int]]) -> List[List[int]]:
         '''
         Recursive function to explore all possible paths
+        Used in getDomains
         
         Args:
             index (int): index at which we are at in the path
@@ -143,47 +138,38 @@ class WordRules(dfsSimple):
         Returns:
             List[List[int]]: All possible paths explored from the current index
         '''
-        if len(path) >= MAX_LEN:
-            return []
+        found_something = False
         
-        #right now, this is checking every time we come across a path
-        if path in self.solution :
-            self.solution_count += 1
-            print(f"I found solution {self.solution_count}! Path: {path}")
-            
-            # when we have found all solutions
-            if self.solution_count == self.solution_tot:
-                print("Congrats! You found all the solutions!")
+        while not found_something:
+            if len(path) >= MAX_LEN:
                 return []
             
-            #get rid of the values in all neighbors
-            # aka apply new constraint
-            new_neighbors = []
-            for n in neighbors:
-                # Create a new list excluding the values that are in the path
-                new_n = [val for val in n if val not in path]
-                new_neighbors.append(new_n)
-            neighbors = new_neighbors
-        
-        all_paths = []
-        
-        # need to make it so if we have returned [] we stop looking at that one
-        
-        if 4 <= len(path) <= MAX_LEN:
-            if len(path) == 4:
-                if self.preprocess(path):
-                    all_paths.append(path)
-                    #don't add path if doesnt pass preprocessing
-            else:
-                all_paths.append(path)
+            #right now, this is checking every time we come across a path
+            if 4 <= len(path) <= MAX_LEN:
+                        
+                if path in self.solution :
+                    self.solution_count += 1
+                    print(f"I found solution {self.solution_count}! Path: {path}")
+                    self.found_indices += path
+                    found_something = True
+                    break
 
-        for neighbor in neighbors[index]:
-            if neighbor not in path:
-                #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
-                new_path = path + [neighbor]  
-                all_paths.extend(self.explore(neighbor, new_path, neighbors))  # Add all resulting paths to the list
-
-        return all_paths
+            for neighbor in neighbors[index]:
+                if neighbor not in path and neighbor not in self.found_indices:
+                    #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
+                    new_path = path + [neighbor]
+                    
+                    #for len 4: preprocess!
+                    if len(new_path) == 4: 
+                        if self.preprocess(new_path):
+                            #we need to make it not keep going on this path :()
+                            self.explore(neighbor, new_path, neighbors)
+                    
+                    #for rest of them: just do the thing
+                    else:
+                        self.explore(neighbor, new_path, neighbors)
+            found_something = True
+        return []
     
     def preprocess(self, path: List[int]) -> bool:
         #use the rules we've made to preprocess the data 
@@ -315,14 +301,14 @@ def displayBoard(board: List[str]):
 
 
 # run word rules  
-# print("WORD_RULES SOLVER")
-# displayBoard(board)
-# wordy_solver = WordRules(board, SOLUTION)  
-# wordy_starttime = time.time() 
-# word_solved = wordy_solver.wordRulesSolver() 
-# wordy_endtime = time.time() 
+print("WORD_RULES SOLVER")
+displayBoard(board)
+wordy_solver = WordRules(board, SOLUTION)  
+wordy_starttime = time.time() 
+word_solved = wordy_solver.wordRulesSolver() 
+wordy_endtime = time.time() 
 
-# wordy_time = wordy_endtime - wordy_starttime
+wordy_time = wordy_endtime - wordy_starttime
 
 
 #run greedy
@@ -336,6 +322,6 @@ greedy_endtime = time.time()
 greedy_time = greedy_endtime - greedy_starttime
 
 #final outcomes:
-#print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Solved = {word_solved}")
+print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Solved = {word_solved}")
 print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Solved = {dfs_solved}")
 
