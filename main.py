@@ -24,12 +24,20 @@ class dfsSimple:
         '''
         # display board
         neighbors = self.getNeighbors() #letters on each side (should we prune this as we fill in?) 
+        self.getDomains(neighbors) #all possible word combinations
+        return 
+
+    def getDomains(self, neighbors):
+        '''
+        Get all possible combinations of letters from 4 letters to MAX_LEN
         
-        # run game
+        Args:
+            board List(char): List of letters at ea position
+            neighbors: List(List(int)): indices of neighbors
+        '''
         for i in range(WIDTH*HEIGHT):
             self.explore(i, [i], neighbors)
-        print("Game Over!")
-        return
+        return 
 
     def explore(self, index: int, path: List[int], neighbors: List[List[int]]) -> List[List[int]]:
         '''
@@ -44,22 +52,20 @@ class dfsSimple:
         Returns:
             List[List[int]]: All possible paths explored from the current index
         '''
-        #I am not sure we are actually correctly updating neighbors for ea index...
         if len(path) >= MAX_LEN:
             return []
         
         #right now, this is checking every time we come across a path
         if path in self.solution :
-            self.solution.remove(path) #no longer need to change this value
             self.solution_count += 1
             print(f"I found solution {self.solution_count}! Path: {path}")
             
             # when we have found all solutions
-            if self.solution_count >= self.solution_tot:
+            if self.solution_count == self.solution_tot:
                 print("Congrats! You found all the solutions!")
-                return  #indicated being done
+                return 
             
-            #get rid of the found path values in all neighbors
+            #get rid of the values in all neighbors
             # aka apply new constraint
             new_neighbors = []
             for n in neighbors:
@@ -75,6 +81,7 @@ class dfsSimple:
 
         for neighbor in neighbors[index]:
             if neighbor not in path:
+                #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
                 new_path = path + [neighbor]  
                 all_paths.extend(self.explore(neighbor, new_path, neighbors))  # Add all resulting paths to the list
 
