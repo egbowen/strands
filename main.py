@@ -300,28 +300,29 @@ def displayBoard(board: List[str]):
 
 
 
-# run word rules  
-print("WORD_RULES SOLVER")
-displayBoard(board)
-wordy_solver = WordRules(board, SOLUTION)  
-wordy_starttime = time.time() 
-word_solved = wordy_solver.wordRulesSolver() 
-wordy_endtime = time.time() 
+# # run word rules  
+# print("WORD_RULES SOLVER")
+# displayBoard(board)
+# wordy_solver = WordRules(board, SOLUTION)  
+# wordy_starttime = time.time() 
+# word_solved = wordy_solver.wordRulesSolver() 
+# wordy_endtime = time.time() 
 
-wordy_time = wordy_endtime - wordy_starttime
+# wordy_time = wordy_endtime - wordy_starttime
 
 
-#run greedy
-print("GREEDY SOLVER")
-displayBoard(board)
-dfs_solver = dfsSimple(board, SOLUTION) 
-greedy_starttime = time.time()  
-dfs_solved = dfs_solver.greedySolver() 
-greedy_endtime = time.time() 
 
-greedy_time = greedy_endtime - greedy_starttime
+# #run greedy
+# print("GREEDY SOLVER")
+# displayBoard(board)
+# dfs_solver = dfsSimple(board, SOLUTION) 
+# greedy_starttime = time.time()  
+# dfs_solved = dfs_solver.greedySolver() 
+# greedy_endtime = time.time() 
 
-#final outcomes:
-print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Solved = {word_solved}")
-print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Solved = {dfs_solved}")
+# greedy_time = greedy_endtime - greedy_starttime
+
+# #final outcomes:
+# print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Solved = {word_solved}")
+# print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Solved = {dfs_solved}")
 
