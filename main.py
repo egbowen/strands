@@ -287,10 +287,11 @@ class DictionarySearch(dfsSimple):
         Another solving algorithm where we check each word against possible words in the dictionary.
         '''
         neighbors = self.getNeighbors()
+        sol = []
         for i in range(WIDTH*HEIGHT):
             if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
                 if i not in self.found_indices:
-                    self.explore(i, [i], self.board[i], neighbors, self.dictionary)
+                    sol[i] = self.explore(i, [i], self.board[i], neighbors, self.dictionary)
             else:
                 break
             
@@ -304,6 +305,7 @@ class DictionarySearch(dfsSimple):
     def explore(self, index: int, path: List[int], curr_prefix: str, neighbors: List[List[int]], words: List[str]) -> List[List[int]]:
         if path in self.solution:
             return path
+        
         curr_dict = self.filter_words(words, curr_prefix)
         for neighbor in neighbors:
             #recurse
