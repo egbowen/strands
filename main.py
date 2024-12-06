@@ -104,7 +104,10 @@ class dfsSimple:
     
 class WordRules(dfsSimple):
     def __init__(self, board, solution):
-        super().__init__(board, solution)
+        super().__init__(board, solution) 
+        self.visited_paths = set() #set to track explored paths
+        self.recursion_count = 0 #count recursions
+        self.incorrect_guesses = 0 #count incorrect guesses/invalid paths explored
         
     def wordRulesSolver(self):
         neighbors = dfsSimple.getNeighbors(self)
@@ -138,46 +141,92 @@ class WordRules(dfsSimple):
         Returns:
             List[List[int]]: All possible paths explored from the current index
         '''
-        found_something = False
-        
-        while not found_something:
-            if len(path) >= MAX_LEN:
-                return []
-            
-            #right now, this is checking every time we come across a path
-            if 4 <= len(path) <= MAX_LEN:
-                        
-                if path in self.solution :
-                    self.solution_count += 1
-                    print(f"I found solution {self.solution_count}! Path: {path}")
-                    self.found_indices += path
-                    found_something = True
-                    break
+        self.recursion_count += 1 #incrememnt recursion counter 
 
-            for neighbor in neighbors[index]:
-                if neighbor not in path and neighbor not in self.found_indices:
-                    #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
-                    new_path = path + [neighbor]
+        #maintain an explored list?
+        path_tuple = tuple(path) #convert path to tuple 
+        if path_tuple in self.visited_paths: 
+            return #skip visited paths
+        self.visited_paths.add(path_tuple) 
+
+        if len(path) >= MAX_LEN: 
+            self.incorrect_guesses += 1 #paths exceeding max length are invalid
+            return   
+        
+        #check if path is a solution
+        if 4 <= len(path) <= MAX_LEN: 
+            if path in self.solution :
+                self.solution_count += 1
+                print(f"I found solution {self.solution_count}! Path: {path}")
+                self.found_indices += path
+                return
+        
+        #explore neighbors 
+        for neighbor in sorted(neighbors[index], key=lambda n: self.highest_freq_letter(index, neighbors[index]), reverse=True): 
+            if neighbor not in path and neighbor not in self.found_indices: 
+                new_path = path + [neighbor] 
+
+                #preprocess at length 4
+                if len(new_path) == 4: 
+                    if self.preprocess(new_path): 
+                        self.explore(neighbor, new_path, neighbors) 
+                    else: 
+                        self.incorrect_guesses += 1 #pruned invalid path explored
+                else: 
+                    self.explore(neighbor, new_path, neighbors)
+
+        # found_something = False
+        
+        # while not found_something:
+        #     if len(path) >= MAX_LEN:
+        #         return []
+            
+        #     #right now, this is checking every time we come across a path
+        #     if 4 <= len(path) <= MAX_LEN:
+                        
+        #         if path in self.solution :
+        #             self.solution_count += 1
+        #             print(f"I found solution {self.solution_count}! Path: {path}")
+        #             self.found_indices += path
+        #             found_something = True
+        #             break
+
+        #     for neighbor in neighbors[index]:
+        #         if neighbor not in path and neighbor not in self.found_indices:
+        #             #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
+        #             new_path = path + [neighbor]
                     
-                    #for len 4: preprocess!
-                    if len(new_path) == 4: 
-                        if self.preprocess(new_path):
-                            #we need to make it not keep going on this path :()
-                            self.explore(neighbor, new_path, neighbors)
+        #             #for len 4: preprocess!
+        #             if len(new_path) == 4: 
+        #                 if self.preprocess(new_path):
+        #                     #we need to make it not keep going on this path :()
+        #                     self.explore(neighbor, new_path, neighbors)
                     
-                    #for rest of them: just do the thing
-                    else:
-                        self.explore(neighbor, new_path, neighbors)
-            found_something = True
-        return []
+        #             #for rest of them: just do the thing
+        #             else:
+        #                 self.explore(neighbor, new_path, neighbors)
+        #     found_something = True
+        # return []
     
     def preprocess(self, path: List[int]) -> bool:
         #use the rules we've made to preprocess the data 
         # we will probably do this at about 4 letters 
         # if self.check_for_vowel(path) and self.check_bad_combos(path):
-        if self.check_for_vowel(path):
-            return True
-        return False
+
+        #threshold for combined letter frequency? could be an additional heursitic?
+
+        # preprocessing rules
+        if len(path) >= 4 and not self.check_for_vowel(path): #vowel check
+            return False 
+        
+        if not self.check_bad_combos(path): #bad combinations check
+            return False
+        
+        return True #After all checks(^^)
+        
+        # if self.check_for_vowel(path):
+        #     return True
+        # return False
     
     def best_next_choice():
         #chose the neighbor that is the most likely next solution
@@ -309,6 +358,8 @@ word_solved = wordy_solver.wordRulesSolver()
 wordy_endtime = time.time() 
 
 wordy_time = wordy_endtime - wordy_starttime
+wordy_recursions = wordy_solver.recursion_count 
+wordy_incorrect_guesses = wordy_solver.incorrect_guesses
 
 
 #run greedy
