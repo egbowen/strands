@@ -2,6 +2,10 @@
 import boards
 from typing import Dict, List, Optional, Set, Tuple
 import time
+import nltk
+from nltk.corpus import words
+import textblob
+from textblob import Word
 
 board = boards.day_11_19 #should not be global at some point 
 SOLUTION = boards.solution_11_19 #compare against this is global?
@@ -320,12 +324,59 @@ class WordRules(dfsSimple):
     
     
 class DictionarySearch(dfsSimple):
-    def explore(self):
+    def __init__(self, board, solution):
+        super().__init__(board, solution)
+        nltk.download('words')
+        self.dictionary = words.words()
+
+    def filter_words(self, prefix: str, words: List[str]) -> List[str]:
+        new_dict = list(filter(lambda x: x[:len(prefix)]==prefix, words))
+        return new_dict
+
+    def dictionarySolver(self):
         '''
         Another solving algorithm where we check each word against possible words in the dictionary.
         '''
-        pass
-    
+        neighbors = self.getNeighbors()
+        sol = []
+        for i in range(WIDTH*HEIGHT):
+            if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
+                if i not in self.found_indices:
+                    solution = self.explore(i, [i], self.board[i], neighbors, self.dictionary)
+                    if solution:
+                        sol.append(solution)
+            else:
+                break
+            
+        print("You are done!")
+        if self.solution_count >= SOLUTION_TOT:
+            print("You solved the puzzle! Good job!")
+            return True
+        print("You did not solve the puzzle. Better luck next time :(")
+        return False 
+
+    def check_word_validity(self, word: str, all_words: list):
+        new_word = Word(word).singularize()
+        for item in all_words:
+            if item[:len(new_word)] == new_word:
+                return True
+        return False
+
+    def explore(self, index: int, path: List[int], curr_prefix: str, neighbors: List[List[int]], words: List[str]) -> List[List[int]]:
+        if path in self.solution:
+            self.solution_count += 1
+            print(f"I found solution {self.solution_count}! Path: {path}")
+            self.found_indices += path
+            return path
+        
+        for neighbor in neighbors[index]:
+            if neighbor not in path and neighbor not in self.found_indices:
+                new_path = path + [neighbor]  
+                new_prefix = curr_prefix + board[neighbor]
+                if self.check_word_validity(new_prefix, words):
+                    self.explore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
+        return None
+
 
 class AC3Search(dfsSimple):
     def explore(self):
@@ -349,30 +400,31 @@ def displayBoard(board: List[str]):
 
 
 
-# run word rules  
-print("WORD_RULES SOLVER")
-displayBoard(board)
-wordy_solver = WordRules(board, SOLUTION)  
-wordy_starttime = time.time() 
-word_solved = wordy_solver.wordRulesSolver() 
-wordy_endtime = time.time() 
+# # run word rules  
+# print("WORD_RULES SOLVER")
+# displayBoard(board)
+# wordy_solver = WordRules(board, SOLUTION)  
+# wordy_starttime = time.time() 
+# word_solved = wordy_solver.wordRulesSolver() 
+# wordy_endtime = time.time() 
 
-wordy_time = wordy_endtime - wordy_starttime
+# wordy_time = wordy_endtime - wordy_starttime
 wordy_recursions = wordy_solver.recursion_count 
 wordy_incorrect_guesses = wordy_solver.incorrect_guesses
 
 
-#run greedy
-print("GREEDY SOLVER")
-displayBoard(board)
-dfs_solver = dfsSimple(board, SOLUTION) 
-greedy_starttime = time.time()  
-dfs_solved = dfs_solver.greedySolver() 
-greedy_endtime = time.time() 
 
-greedy_time = greedy_endtime - greedy_starttime
+# #run greedy
+# print("GREEDY SOLVER")
+# displayBoard(board)
+# dfs_solver = dfsSimple(board, SOLUTION) 
+# greedy_starttime = time.time()  
+# dfs_solved = dfs_solver.greedySolver() 
+# greedy_endtime = time.time() 
 
-#final outcomes:
-print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Recursions = {wordy_recursions}, Incorrect Guesses = {wordy_incorrect_guesses}, Solved = {word_solved}")
-print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Solved = {dfs_solved}")
+# greedy_time = greedy_endtime - greedy_starttime
+
+# #final outcomes:
+# print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Recursions = {wordy_recursions}, Incorrect Guesses = {wordy_incorrect_guesses}, Solved = {word_solved}")
+# print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Solved = {dfs_solved}")
 
