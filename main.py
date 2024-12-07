@@ -44,7 +44,7 @@ class dfsSimple:
         if self.solution_count >= SOLUTION_TOT:
             print("You solved the puzzle! Good job!")
             return True
-        print("You did not solve the puzzle. Better luck next time :(")
+        print("You did not solve the puzzle. Better luck next time")
         return False 
 
     def explore(self, index: int, path: List[int], neighbors: List[List[int]]) -> List[List[int]]:
@@ -129,7 +129,7 @@ class WordRules(dfsSimple):
         if self.solution_count >= SOLUTION_TOT:
             print("You solved the puzzle! Good job!")
             return True
-        print("You did not solve the puzzle. Better luck next time :(")
+        print("You did not solve the puzzle. Better luck next time")
         return False
         
     def explore(self, index: int, path: List[int], neighbors: List[List[int]]) -> List[List[int]]:
@@ -145,72 +145,73 @@ class WordRules(dfsSimple):
         Returns:
             List[List[int]]: All possible paths explored from the current index
         '''
-        self.recursion_count += 1 #incrememnt recursion counter 
+        # self.recursion_count += 1 #incrememnt recursion counter 
 
-        #maintain an explored list?
-        path_tuple = tuple(path) #convert path to tuple 
-        if path_tuple in self.visited_paths: 
-            return #skip visited paths
-        self.visited_paths.add(path_tuple) 
+        # #maintain an explored list?
+        # path_tuple = tuple(path) #convert path to tuple 
+        # if path_tuple in self.visited_paths: 
+        #     return #skip visited paths
+        # self.visited_paths.add(path_tuple) 
 
-        if len(path) >= MAX_LEN: 
-            self.incorrect_guesses += 1 #paths exceeding max length are invalid
-            return   
+        # if len(path) >= MAX_LEN: 
+        #     self.incorrect_guesses += 1 #paths exceeding max length are invalid
+        #     return   
         
-        #check if path is a solution
-        if 4 <= len(path) <= MAX_LEN: 
-            if path in self.solution :
-                self.solution_count += 1
-                print(f"I found solution {self.solution_count}! Path: {path}")
-                self.found_indices += path
-                return
+        # #check if path is a solution
+        # if 4 <= len(path) <= MAX_LEN: 
+        #     if path in self.solution :
+        #         self.solution_count += 1
+        #         print(f"I found solution {self.solution_count}! Path: {path}")
+        #         self.found_indices += path
+        #         return
         
-        #explore neighbors 
-        for neighbor in sorted(neighbors[index], key=lambda n: self.highest_freq_letter(index, neighbors[index]), reverse=True): 
-            if neighbor not in path and neighbor not in self.found_indices: 
-                new_path = path + [neighbor] 
+        # #explore neighbors 
+        # for neighbor in sorted(neighbors[index], key=lambda n: self.highest_freq_letter(index, neighbors[index]), reverse=True): 
+        #     if neighbor not in path and neighbor not in self.found_indices: 
+        #         new_path = path + [neighbor] 
 
-                #preprocess at length 4
-                if len(new_path) == 4: 
-                    if self.preprocess(new_path): 
-                        self.explore(neighbor, new_path, neighbors) 
-                    else: 
-                        self.incorrect_guesses += 1 #pruned invalid path explored
-                else: 
-                    self.explore(neighbor, new_path, neighbors)
+        #         #preprocess at length 4
+        #         if len(new_path) == 4: 
+        #             if self.preprocess(new_path): 
+        #                 self.explore(neighbor, new_path, neighbors) 
+        #             else: 
+        #                 self.incorrect_guesses += 1 #pruned invalid path explored
+        #         else: 
+        #             self.explore(neighbor, new_path, neighbors)
 
-        # found_something = False
+        found_something = False
         
-        # while not found_something:
-        #     if len(path) >= MAX_LEN:
-        #         return []
+        while not found_something:
+            if len(path) >= MAX_LEN:
+                return []
             
-        #     #right now, this is checking every time we come across a path
-        #     if 4 <= len(path) <= MAX_LEN:
+            #right now, this is checking every time we come across a path
+            if 4 <= len(path) <= MAX_LEN:
                         
-        #         if path in self.solution :
-        #             self.solution_count += 1
-        #             print(f"I found solution {self.solution_count}! Path: {path}")
-        #             self.found_indices += path
-        #             found_something = True
-        #             break
+                if path in self.solution :
+                    self.solution_count += 1
+                    print(f"I found solution {self.solution_count}! Path: {path}")
+                    self.found_indices += path
+                    found_something = True
+                    break
 
-        #     for neighbor in neighbors[index]:
-        #         if neighbor not in path and neighbor not in self.found_indices:
-        #             #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
-        #             new_path = path + [neighbor]
+            for neighbor in neighbors[index]:
+                if neighbor not in path and neighbor not in self.found_indices:
+                    #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
+                    new_path = path + [neighbor]
                     
-        #             #for len 4: preprocess!
-        #             if len(new_path) == 4: 
-        #                 if self.preprocess(new_path):
-        #                     #we need to make it not keep going on this path :()
-        #                     self.explore(neighbor, new_path, neighbors)
+                    #for len 4: preprocess!
+                    if len(new_path) == 4: 
+                        if self.preprocess(new_path):
+                            #print("got thru preprocessing")
+                            #we need to make it not keep going on this path :()
+                            self.explore(neighbor, new_path, neighbors)
                     
-        #             #for rest of them: just do the thing
-        #             else:
-        #                 self.explore(neighbor, new_path, neighbors)
-        #     found_something = True
-        # return []
+                    #for rest of them: just do the thing
+                    else:
+                        self.explore(neighbor, new_path, neighbors)
+            found_something = True
+        return []
     
     def preprocess(self, path: List[int]) -> bool:
         #use the rules we've made to preprocess the data 
@@ -220,9 +221,10 @@ class WordRules(dfsSimple):
         #threshold for combined letter frequency? could be an additional heursitic?
 
         # preprocessing rules
-        if len(path) >= 4 and not self.check_for_vowel(path): #vowel check
+        if not self.check_for_vowel(path): # there is no vowel :(
             return False 
         
+    
         if not self.check_bad_combos(path): #bad combinations check
             return False
         
@@ -252,7 +254,15 @@ class WordRules(dfsSimple):
             return True
         
         vowels = {'a', 'e', 'i', 'o', 'u', 'y'}
-        return any(letter in vowels for letter in path)
+
+        # this is the issue. the path is indicies \
+        for i in path:
+            for vowel in vowels:
+                # print("vowel: ", vowel)
+                # print("letter: ", board[i])
+                if board[i].lower() == vowel:
+                    return True  
+        return False
     
     def check_bad_combos(self, path: List[int]) -> bool:
         """
@@ -383,6 +393,7 @@ class AC3Search(dfsSimple):
         '''
         Another solving algorithm where use a modification of the AC3 algorithm
         '''
+        
         pass
 
 
@@ -400,15 +411,15 @@ def displayBoard(board: List[str]):
 
 
 
-# # run word rules  
-# print("WORD_RULES SOLVER")
-# displayBoard(board)
-# wordy_solver = WordRules(board, SOLUTION)  
-# wordy_starttime = time.time() 
-# word_solved = wordy_solver.wordRulesSolver() 
-# wordy_endtime = time.time() 
+# run word rules  
+print("WORD_RULES SOLVER")
+displayBoard(board)
+wordy_solver = WordRules(board, SOLUTION)  
+wordy_starttime = time.time() 
+word_solved = wordy_solver.wordRulesSolver() 
+wordy_endtime = time.time() 
 
-# wordy_time = wordy_endtime - wordy_starttime
+wordy_time = wordy_endtime - wordy_starttime
 wordy_recursions = wordy_solver.recursion_count 
 wordy_incorrect_guesses = wordy_solver.incorrect_guesses
 
@@ -424,7 +435,7 @@ wordy_incorrect_guesses = wordy_solver.incorrect_guesses
 
 # greedy_time = greedy_endtime - greedy_starttime
 
-# #final outcomes:
-# print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Recursions = {wordy_recursions}, Incorrect Guesses = {wordy_incorrect_guesses}, Solved = {word_solved}")
+# # #final outcomes:
+print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Recursions = {wordy_recursions}, Incorrect Guesses = {wordy_incorrect_guesses}, Solved = {word_solved}")
 # print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Solved = {dfs_solved}")
 
