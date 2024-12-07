@@ -44,7 +44,7 @@ class dfsSimple:
         if self.solution_count >= SOLUTION_TOT:
             print("You solved the puzzle! Good job!")
             return True
-        print("You did not solve the puzzle. Better luck next time :(")
+        print("You did not solve the puzzle. Better luck next time")
         return False 
 
     def explore(self, index: int, path: List[int], neighbors: List[List[int]]) -> List[List[int]]:
@@ -108,7 +108,10 @@ class dfsSimple:
     
 class WordRules(dfsSimple):
     def __init__(self, board, solution):
-        super().__init__(board, solution)
+        super().__init__(board, solution) 
+        self.visited_paths = set() #set to track explored paths
+        self.recursion_count = 0 #count recursions
+        self.incorrect_guesses = 0 #count incorrect guesses/invalid paths explored
         
     def wordRulesSolver(self):
         neighbors = dfsSimple.getNeighbors(self)
@@ -126,7 +129,7 @@ class WordRules(dfsSimple):
         if self.solution_count >= SOLUTION_TOT:
             print("You solved the puzzle! Good job!")
             return True
-        print("You did not solve the puzzle. Better luck next time :(")
+        print("You did not solve the puzzle. Better luck next time")
         return False
         
     def explore(self, index: int, path: List[int], neighbors: List[List[int]]) -> List[List[int]]:
@@ -142,6 +145,7 @@ class WordRules(dfsSimple):
         Returns:
             List[List[int]]: All possible paths explored from the current index
         '''
+
         found_something = False
         
         while not found_something:
@@ -166,6 +170,7 @@ class WordRules(dfsSimple):
                     #for len 4: preprocess!
                     if len(new_path) == 4: 
                         if self.preprocess(new_path):
+                            #print("got thru preprocessing")
                             #we need to make it not keep going on this path :()
                             self.explore(neighbor, new_path, neighbors)
                     
@@ -179,9 +184,22 @@ class WordRules(dfsSimple):
         #use the rules we've made to preprocess the data 
         # we will probably do this at about 4 letters 
         # if self.check_for_vowel(path) and self.check_bad_combos(path):
-        if self.check_for_vowel(path):
-            return True
-        return False
+
+        #threshold for combined letter frequency? could be an additional heursitic?
+
+        # preprocessing rules
+        if not self.check_for_vowel(path): # there is no vowel :(
+            return False 
+        
+    
+        if not self.check_bad_combos(path): #bad combinations check
+            return False
+        
+        return True #After all checks(^^)
+        
+        # if self.check_for_vowel(path):
+        #     return True
+        # return False
     
     def best_next_choice():
         #chose the neighbor that is the most likely next solution
@@ -203,7 +221,15 @@ class WordRules(dfsSimple):
             return True
         
         vowels = {'a', 'e', 'i', 'o', 'u', 'y'}
-        return any(letter in vowels for letter in path)
+
+        # this is the issue. the path is indicies \
+        for i in path:
+            for vowel in vowels:
+                # print("vowel: ", vowel)
+                # print("letter: ", board[i])
+                if board[i].lower() == vowel:
+                    return True  
+        return False
     
     def check_bad_combos(self, path: List[int]) -> bool:
         """
@@ -339,6 +365,7 @@ class AC3Search(dfsSimple):
         '''
         Another solving algorithm where use a modification of the AC3 algorithm
         '''
+        
         pass
 
 
@@ -356,15 +383,17 @@ def displayBoard(board: List[str]):
 
 
 
-# # run word rules  
-# print("WORD_RULES SOLVER")
-# displayBoard(board)
-# wordy_solver = WordRules(board, SOLUTION)  
-# wordy_starttime = time.time() 
-# word_solved = wordy_solver.wordRulesSolver() 
-# wordy_endtime = time.time() 
+# run word rules  
+print("WORD_RULES SOLVER")
+displayBoard(board)
+wordy_solver = WordRules(board, SOLUTION)  
+wordy_starttime = time.time() 
+word_solved = wordy_solver.wordRulesSolver() 
+wordy_endtime = time.time() 
 
-# wordy_time = wordy_endtime - wordy_starttime
+wordy_time = wordy_endtime - wordy_starttime
+wordy_recursions = wordy_solver.recursion_count 
+wordy_incorrect_guesses = wordy_solver.incorrect_guesses
 
 
 
@@ -378,7 +407,7 @@ def displayBoard(board: List[str]):
 
 # greedy_time = greedy_endtime - greedy_starttime
 
-# #final outcomes:
-# print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Solved = {word_solved}")
+# # #final outcomes:
+print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Recursions = {wordy_recursions}, Incorrect Guesses = {wordy_incorrect_guesses}, Solved = {word_solved}")
 # print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Solved = {dfs_solved}")
 
