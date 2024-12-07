@@ -312,6 +312,7 @@ class DictionarySearch(WordRules):
         word_str = word_file.read()
         self.dictionary = word_str.split("\n")
         self.dictionary.append("spork")
+        self.dictionary.append("scifi")
 
     def dictionarySolver(self):
         '''
