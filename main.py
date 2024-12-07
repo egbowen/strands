@@ -145,39 +145,6 @@ class WordRules(dfsSimple):
         Returns:
             List[List[int]]: All possible paths explored from the current index
         '''
-        # self.recursion_count += 1 #incrememnt recursion counter 
-
-        # #maintain an explored list?
-        # path_tuple = tuple(path) #convert path to tuple 
-        # if path_tuple in self.visited_paths: 
-        #     return #skip visited paths
-        # self.visited_paths.add(path_tuple) 
-
-        # if len(path) >= MAX_LEN: 
-        #     self.incorrect_guesses += 1 #paths exceeding max length are invalid
-        #     return   
-        
-        # #check if path is a solution
-        # if 4 <= len(path) <= MAX_LEN: 
-        #     if path in self.solution :
-        #         self.solution_count += 1
-        #         print(f"I found solution {self.solution_count}! Path: {path}")
-        #         self.found_indices += path
-        #         return
-        
-        # #explore neighbors 
-        # for neighbor in sorted(neighbors[index], key=lambda n: self.highest_freq_letter(index, neighbors[index]), reverse=True): 
-        #     if neighbor not in path and neighbor not in self.found_indices: 
-        #         new_path = path + [neighbor] 
-
-        #         #preprocess at length 4
-        #         if len(new_path) == 4: 
-        #             if self.preprocess(new_path): 
-        #                 self.explore(neighbor, new_path, neighbors) 
-        #             else: 
-        #                 self.incorrect_guesses += 1 #pruned invalid path explored
-        #         else: 
-        #             self.explore(neighbor, new_path, neighbors)
 
         found_something = False
         
