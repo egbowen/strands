@@ -11,8 +11,6 @@ wordy_endtime = time.time()
 
 wordy_time = wordy_endtime - wordy_starttime
 
-
-
 #run greedy
 print("GREEDY SOLVER")
 main.displayBoard(main.board)
@@ -30,14 +28,10 @@ dict_solver = main.DictionarySearch(main.board, main.SOLUTION)
 dict_starttime = time.time()
 dict_solved = dict_solver.dictionarySolver()
 dict_endtime = time.time()
+
 dict_time = dict_endtime - dict_starttime
 
-#final outcomes:
+# final outcomes:
 print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Solved = {word_solved}")
 print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Solved = {dfs_solved}")
 print(f"Dictionary Solver: Time taken = {dict_time:.2f} seconds, Solved = {dict_solved}")
-
-
-
-displaydict = main.DictionarySearch(main.board, main.SOLUTION)
-print(displaydict.check_word_validity("chopsticks", displaydict.dictionary))
