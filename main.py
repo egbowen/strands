@@ -310,7 +310,9 @@ class DictionarySearch(dfsSimple):
         new_word = Word(word).singularize()
         print(f"Original Word: {word}\n Singularized: {new_word}")
         for item in all_words:
-            if item[:len(new_word)] == new_word:
+            if item[:len(word)] == word:
+                return True
+            elif item[:len(new_word)] == new_word:
                 return True
         return False
 
