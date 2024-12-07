@@ -10,3 +10,5 @@ https://pi.math.cornell.edu/~mec/2003-2004/cryptography/subs/frequencies.html
 
 
 Liz thoughts: maybe we check for all in len 8, then when we have found say 4-5 solutions, we up that size with the more limited data. 
+
+Word textfile comes from this github repo: https://github.com/dwyl/english-words
