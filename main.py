@@ -7,11 +7,11 @@ from nltk.corpus import words
 import textblob
 from textblob import Word
 
-board = boards.day_11_19 #should not be global at some point 
-SOLUTION = boards.solution_11_19 #compare against this is global?
+board = boards.small_board #should not be global at some point 
+SOLUTION = boards.small_solution #compare against this is global?
 SOLUTION_TOT = len(SOLUTION)
-WIDTH = 6
-HEIGHT = 8
+WIDTH = boards.small_width
+HEIGHT = boards.small_height
 MAX_LEN = 11 #upping this number makes it take a long time
 
 SOLUTION_COUNT = 0
