@@ -280,10 +280,6 @@ class DictionarySearch(dfsSimple):
         nltk.download('words')
         self.dictionary = words.words()
 
-    def filter_words(self, prefix: str, words: List[str]) -> List[str]:
-        new_dict = list(filter(lambda x: x[:len(prefix)]==prefix, words))
-        return new_dict
-
     def dictionarySolver(self):
         '''
         Another solving algorithm where we check each word against possible words in the dictionary.
@@ -305,9 +301,14 @@ class DictionarySearch(dfsSimple):
             return True
         print("You did not solve the puzzle. Better luck next time :(")
         return False 
-
+    
+    def filter_words(self, prefix: str, words: List[str]) -> List[str]:
+            new_dict = list(filter(lambda x: x[:len(prefix)]==prefix, words))
+            return new_dict
+    
     def check_word_validity(self, word: str, all_words: list):
         new_word = Word(word).singularize()
+        print(f"Original Word: {word}\n Singularized: {new_word}")
         for item in all_words:
             if item[:len(new_word)] == new_word:
                 return True
@@ -325,7 +326,9 @@ class DictionarySearch(dfsSimple):
                 new_path = path + [neighbor]  
                 new_prefix = curr_prefix + board[neighbor]
                 if self.check_word_validity(new_prefix, words):
-                    self.explore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
+                    value = self.explore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
+                    if value:
+                        return value
         return None
 
 
