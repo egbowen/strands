@@ -197,6 +197,7 @@ class WordRules(dfsSimple):
                             self.recursion_count += 1 #incrememnt recursion counter 
                             self.explore(neighbor, new_path, neighbors)
                     else:
+                        self.recursion_count += 1
                         self.explore(neighbor, new_path, neighbors)
             found_something = True
         return []
