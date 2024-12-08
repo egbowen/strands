@@ -1,11 +1,11 @@
 #make object with 6x8 board
 import boards
 from typing import Dict, List, Optional, Set, Tuple
-import time
-import nltk
-from nltk.corpus import words
-import textblob
-from textblob import Word
+# import time
+# import nltk
+# from nltk.corpus import words
+# import textblob
+# from textblob import Word
 
 #small board 
 # board = boards.small_board
@@ -365,6 +365,7 @@ class DictionarySearch(WordRules):
         if 4 <= len(path) <= MAX_LEN:
             if path in self.solution:
                 self.solution_count += 1
+                print(f"I found solution {self.solution_count}! Path: {path}, Word: {curr_prefix}")
                 display_solution(self.solution_count, path)
                 self.found_indices += path
                 return path
@@ -376,7 +377,6 @@ class DictionarySearch(WordRules):
                 new_prefix = curr_prefix + board[neighbor]
                 value = self.dictExplore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
                 if value:
-                    print(new_prefix)
                     return value
         return None
     
