@@ -33,7 +33,7 @@ small_board = ['M', 'A', 'C', 'E',
                 'I', 'O', 'I', 'I', 
                 'R', 'S', 'C', 'F']
 small_solution = [
-    [5, 4, 0, 1, 2], #romance
+    [5, 4, 0, 1, 6, 2, 3], #romance
     [13, 12, 8, 9, 10, 7], #genres
     [15, 11, 14, 17, 16, 20], #memoir
     [21, 22, 18, 23, 19] #scifi

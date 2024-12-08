@@ -7,11 +7,11 @@ from nltk.corpus import words
 import textblob
 from textblob import Word
 
-board = boards.small_board
-SOLUTION = boards.small_solution
-SOLUTION_TOT = len(SOLUTION) 
-WIDTH = boards.small_width
-HEIGHT = boards.small_height
+# board = boards.small_board
+# SOLUTION = boards.small_solution
+# SOLUTION_TOT = len(SOLUTION) 
+# WIDTH = boards.small_width
+# HEIGHT = boards.small_height
 
 
 # board = boards.stork_board #should not be global at some point 
@@ -19,11 +19,11 @@ HEIGHT = boards.small_height
 # SOLUTION_TOT = len(SOLUTION)
 # WIDTH = boards.stork_width
 # HEIGHT = boards.stork_height
-# board = boards.day_11_19
-# SOLUTION = boards.solution_11_19
-# SOLUTION_TOT = len(SOLUTION) 
-# WIDTH = 6
-# HEIGHT = 8
+board = boards.day_11_19
+SOLUTION = boards.solution_11_19
+SOLUTION_TOT = len(SOLUTION) 
+WIDTH = 6
+HEIGHT = 8
 MAX_LEN = 11 #upping this number makes it take a long time
 
 SOLUTION_COUNT = 0
@@ -365,14 +365,13 @@ class DictionarySearch(WordRules):
         return new_dict
 
     def explore(self, index: int, path: List[int], curr_prefix: str, neighbors: List[List[int]], words: List[str]) -> List[List[int]]:
-        print(curr_prefix)
         self.recursion_count += 1 #increment recursion counter 
         if not words:
             return None
         if 4 <= len(path) <= MAX_LEN:
             if path in self.solution:
                 self.solution_count += 1
-                print(f"I found solution {self.solution_count}! Path: {path}")
+                print(f"I found solution {self.solution_count}! Path: {path}, Word: {curr_prefix}")
                 self.found_indices += path
                 return path
         self.incorrect_guesses += 1 #increment incorrect guess counter
@@ -382,7 +381,6 @@ class DictionarySearch(WordRules):
                 new_prefix = curr_prefix + board[neighbor]
                 value = self.explore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
                 if value:
-                    print(new_prefix)
                     return value
         return None
 
@@ -411,16 +409,16 @@ def displayBoard(board: List[str]):
 
 
 # run word rules  
-print("WORD_RULES SOLVER")
-displayBoard(board)
-wordy_solver = WordRules(board, SOLUTION)  
-wordy_starttime = time.time() 
-word_solved = wordy_solver.wordRulesSolver() 
-wordy_endtime = time.time() 
+# print("WORD_RULES SOLVER")
+# displayBoard(board)
+# wordy_solver = WordRules(board, SOLUTION)  
+# wordy_starttime = time.time() 
+# word_solved = wordy_solver.wordRulesSolver() 
+# wordy_endtime = time.time() 
 
-wordy_time = wordy_endtime - wordy_starttime
-wordy_recursions = wordy_solver.recursion_count 
-wordy_incorrect_guesses = wordy_solver.incorrect_guesses
+# wordy_time = wordy_endtime - wordy_starttime
+# wordy_recursions = wordy_solver.recursion_count 
+# wordy_incorrect_guesses = wordy_solver.incorrect_guesses
 
 
 
