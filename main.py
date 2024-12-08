@@ -7,11 +7,11 @@ from nltk.corpus import words
 import textblob
 from textblob import Word
 
-board = boards.day_11_19 #should not be global at some point 
-SOLUTION = boards.solution_11_19 #compare against this is global?
+board = boards.stork_board #should not be global at some point 
+SOLUTION = boards.stork_solution #compare against this is global?
 SOLUTION_TOT = len(SOLUTION)
-WIDTH = 6
-HEIGHT = 8
+WIDTH = boards.stork_width
+HEIGHT = boards.stork_height
 MAX_LEN = 11 #upping this number makes it take a long time
 
 SOLUTION_COUNT = 0
@@ -345,15 +345,20 @@ class WordRules(dfsSimple):
     
     
     
-class DictionarySearch(dfsSimple):
+class DictionarySearch(WordRules):
     def __init__(self, board, solution):
         super().__init__(board, solution)
-        nltk.download('words')
-        self.dictionary = words.words()
-
-    def filter_words(self, prefix: str, words: List[str]) -> List[str]:
-        new_dict = list(filter(lambda x: x[:len(prefix)]==prefix, words))
-        return new_dict
+        # nltk.download('words')
+        # self.dictionary = words.words()
+        # self.dictionary.append("spork")
+        word_file = open('words_alpha.txt', 'r')
+        word_str = word_file.read()
+        self.dictionary = word_str.split("\n")
+        # adding words that are not present in the dictionary
+        # in the future we will account for these with a brute force search for them once all dictionary words are found
+        self.dictionary.append("spork")
+        self.dictionary.append("scifi")
+        self.dictionary.append("wingedthings")
 
     def dictionarySolver(self):
         '''
@@ -377,26 +382,27 @@ class DictionarySearch(dfsSimple):
         print("You did not solve the puzzle. Better luck next time :(")
         return False 
 
-    def check_word_validity(self, word: str, all_words: list):
-        new_word = Word(word).singularize()
-        for item in all_words:
-            if item[:len(new_word)] == new_word:
-                return True
-        return False
+    def filter_words(self, prefix: str, words: List[str]) -> List[str]:
+        new_dict = list(filter(lambda x: x[:len(prefix)]==prefix.lower(), words))
+        return new_dict
 
     def explore(self, index: int, path: List[int], curr_prefix: str, neighbors: List[List[int]], words: List[str]) -> List[List[int]]:
-        if path in self.solution:
-            self.solution_count += 1
-            print(f"I found solution {self.solution_count}! Path: {path}")
-            self.found_indices += path
-            return path
-        
+        if not words:
+            return None
+        if 4 <= len(path) <= MAX_LEN:
+            if path in self.solution:
+                self.solution_count += 1
+                print(f"I found solution {self.solution_count}! Path: {path}")
+                self.found_indices += path
+                return path
         for neighbor in neighbors[index]:
             if neighbor not in path and neighbor not in self.found_indices:
                 new_path = path + [neighbor]  
                 new_prefix = curr_prefix + board[neighbor]
-                if self.check_word_validity(new_prefix, words):
-                    self.explore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
+                value = self.explore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
+                if value:
+                    print(new_prefix)
+                    return value
         return None
 
 
@@ -424,16 +430,16 @@ def displayBoard(board: List[str]):
 
 
 # run word rules  
-print("WORD_RULES SOLVER")
-displayBoard(board)
-wordy_solver = WordRules(board, SOLUTION)  
-wordy_starttime = time.time() 
-word_solved = wordy_solver.wordRulesSolver() 
-wordy_endtime = time.time() 
+# print("WORD_RULES SOLVER")
+# displayBoard(board)
+# wordy_solver = WordRules(board, SOLUTION)  
+# wordy_starttime = time.time() 
+# word_solved = wordy_solver.wordRulesSolver() 
+# wordy_endtime = time.time() 
 
-wordy_time = wordy_endtime - wordy_starttime
-wordy_recursions = wordy_solver.recursion_count 
-wordy_incorrect_guesses = wordy_solver.incorrect_guesses
+# wordy_time = wordy_endtime - wordy_starttime
+# wordy_recursions = wordy_solver.recursion_count 
+# wordy_incorrect_guesses = wordy_solver.incorrect_guesses
 
 
 
