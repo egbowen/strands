@@ -1,11 +1,11 @@
 #make object with 6x8 board
 import boards
 from typing import Dict, List, Optional, Set, Tuple
-import time
-import nltk
-from nltk.corpus import words
-import textblob
-from textblob import Word
+# import time
+# import nltk
+# from nltk.corpus import words
+# import textblob
+# from textblob import Word
 
 #small board 
 # board = boards.small_board
