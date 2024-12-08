@@ -22,6 +22,8 @@ class dfsSimple:
         self.solution = solution
         self.solution_tot = len(solution)
         self.solution_count = 0
+        self.recursion_count = 0
+        self.incorrect_guesses = 0
         self.found_indices = []
     
     def greedySolver(self):
@@ -60,10 +62,13 @@ class dfsSimple:
         Returns:
             List[List[int]]: All possible paths explored from the current index
         '''
+        self.recursion_count += 1
+
         found_something = False
         
         while not found_something:
             if len(path) >= MAX_LEN:
+                self.incorrect_guesses += 1
                 return []
             
             #right now, this is checking every time we come across a path
@@ -146,11 +151,14 @@ class WordRules(dfsSimple):
             List[List[int]]: All possible paths explored from the current index
         '''
 
+        self.recursion_count += 1 #incrememnt recursion counter 
+
         found_something = False
-        
+
         while not found_something:
             if len(path) >= MAX_LEN:
-                return []
+                self.incorrect_guesses += 1
+                return [] 
             
             #right now, this is checking every time we come across a path
             if 4 <= len(path) <= MAX_LEN:
@@ -161,8 +169,10 @@ class WordRules(dfsSimple):
                     self.found_indices += path
                     found_something = True
                     break
-
-            for neighbor in neighbors[index]:
+            
+            prioritized_neighbors = sorted(neighbors[index], key=lambda n: self.highest_freq_letter(n, neighbors[n]), reverse=True) 
+            
+            for neighbor in prioritized_neighbors:
                 if neighbor not in path and neighbor not in self.found_indices:
                     #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
                     new_path = path + [neighbor]
@@ -173,12 +183,47 @@ class WordRules(dfsSimple):
                             #print("got thru preprocessing")
                             #we need to make it not keep going on this path :()
                             self.explore(neighbor, new_path, neighbors)
-                    
+                    #stop going down bad path
                     #for rest of them: just do the thing
                     else:
                         self.explore(neighbor, new_path, neighbors)
             found_something = True
         return []
+        
+        # self.recursion_count += 1 #incrememnt recursion counter 
+
+        # path_tuple = tuple(path) #convert path to tuple 
+        # if path_tuple in self.visited_paths: 
+        #     return #skip visited paths
+        # self.visited_paths.add(path_tuple) 
+
+        # if len(path) >= MAX_LEN: 
+        #     self.incorrect_guesses += 1 #paths exceeding max length are invalid
+        #     return   
+        
+        # #check if path is a solution
+        # if 4 <= len(path) <= MAX_LEN: 
+        #     if path in self.solution :
+        #         self.solution_count += 1
+        #         print(f"I found solution {self.solution_count}! Path: {path}")
+        #         self.found_indices += path
+        #         return
+        
+        # #explore neighbors 
+        # #for neighbor in sortend(neigbhors[index], key=lambda n: self.highest_freq_letter(index, neighbors[index]), reverse=True):
+        # for neighbor in sorted(neighbors[index], key=lambda n: self.highest_freq_letter(index, neighbors[index]), reverse=True): 
+        #     if neighbor not in path and neighbor not in self.found_indices: 
+        #         new_path = path + [neighbor] 
+
+        #         #preprocess at length 4
+        #         if len(new_path) == 4: 
+        #             if self.preprocess(new_path): 
+        #                 self.explore(neighbor, new_path, neighbors) 
+        #             else: 
+        #                 self.incorrect_guesses += 1 #pruned invalid path explored
+        #         else: 
+        #             self.explore(neighbor, new_path, neighbors)
+
     
     def preprocess(self, path: List[int]) -> bool:
         #use the rules we've made to preprocess the data 
@@ -393,16 +438,18 @@ wordy_incorrect_guesses = wordy_solver.incorrect_guesses
 
 
 # #run greedy
-# print("GREEDY SOLVER")
-# displayBoard(board)
-# dfs_solver = dfsSimple(board, SOLUTION) 
-# greedy_starttime = time.time()  
-# dfs_solved = dfs_solver.greedySolver() 
-# greedy_endtime = time.time() 
+print("GREEDY SOLVER")
+displayBoard(board)
+dfs_solver = dfsSimple(board, SOLUTION) 
+greedy_starttime = time.time()  
+greedy_recursion_count = dfs_solver.recursion_count
+greedy_incorrect_guesses = dfs_solver.incorrect_guesses
+dfs_solved = dfs_solver.greedySolver() 
+greedy_endtime = time.time() 
 
-# greedy_time = greedy_endtime - greedy_starttime
+greedy_time = greedy_endtime - greedy_starttime
 
 # # #final outcomes:
 print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Recursions = {wordy_recursions}, Incorrect Guesses = {wordy_incorrect_guesses}, Solved = {word_solved}")
-# print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Solved = {dfs_solved}")
+print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Recursion = {greedy_recursion_count}, Incorrect Guesses = {greedy_incorrect_guesses}, Solved = {dfs_solved}")
 
