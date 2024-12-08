@@ -7,11 +7,11 @@ from nltk.corpus import words
 import textblob
 from textblob import Word
 
-board = boards.stork_board #should not be global at some point 
-SOLUTION = boards.stork_solution #compare against this is global?
+board = boards.small_board #should not be global at some point 
+SOLUTION = boards.small_solution #compare against this is global?
 SOLUTION_TOT = len(SOLUTION)
-WIDTH = boards.stork_width
-HEIGHT = boards.stork_height
+WIDTH = boards.small_width
+HEIGHT = boards.small_height
 MAX_LEN = 11 #upping this number makes it take a long time
 
 SOLUTION_COUNT = 0
@@ -387,6 +387,7 @@ class DictionarySearch(WordRules):
         return new_dict
 
     def explore(self, index: int, path: List[int], curr_prefix: str, neighbors: List[List[int]], words: List[str]) -> List[List[int]]:
+        print(curr_prefix)
         if not words:
             return None
         if 4 <= len(path) <= MAX_LEN:
@@ -444,18 +445,18 @@ def displayBoard(board: List[str]):
 
 
 # #run greedy
-print("GREEDY SOLVER")
-displayBoard(board)
-dfs_solver = dfsSimple(board, SOLUTION) 
-greedy_starttime = time.time()  
-greedy_recursion_count = dfs_solver.recursion_count
-greedy_incorrect_guesses = dfs_solver.incorrect_guesses
-dfs_solved = dfs_solver.greedySolver() 
-greedy_endtime = time.time() 
+# print("GREEDY SOLVER")
+# displayBoard(board)
+# dfs_solver = dfsSimple(board, SOLUTION) 
+# greedy_starttime = time.time()  
+# greedy_recursion_count = dfs_solver.recursion_count
+# greedy_incorrect_guesses = dfs_solver.incorrect_guesses
+# dfs_solved = dfs_solver.greedySolver() 
+# greedy_endtime = time.time() 
 
-greedy_time = greedy_endtime - greedy_starttime
+# greedy_time = greedy_endtime - greedy_starttime
 
-# # #final outcomes:
-print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Recursions = {wordy_recursions}, Incorrect Guesses = {wordy_incorrect_guesses}, Solved = {word_solved}")
-print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Recursion = {greedy_recursion_count}, Incorrect Guesses = {greedy_incorrect_guesses}, Solved = {dfs_solved}")
+# # # #final outcomes:
+# print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Recursions = {wordy_recursions}, Incorrect Guesses = {wordy_incorrect_guesses}, Solved = {word_solved}")
+# print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Recursion = {greedy_recursion_count}, Incorrect Guesses = {greedy_incorrect_guesses}, Solved = {dfs_solved}")
 

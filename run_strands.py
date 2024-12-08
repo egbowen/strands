@@ -1,5 +1,7 @@
 import main
 import time
+import matplotlib.pyplot as plt
+import numpy as np
 
 # run word rules  
 print("WORD_RULES SOLVER")
@@ -35,3 +37,8 @@ dict_time = dict_endtime - dict_starttime
 print(f"Word Rules Solver: Time taken = {wordy_time:.2f} seconds, Solved = {word_solved}")
 print(f"Greedy Solver: Time taken = {greedy_time:.2f} seconds, Solved = {dfs_solved}")
 print(f"Dictionary Solver: Time taken = {dict_time:.2f} seconds, Solved = {dict_solved}")
+
+# labels = ["Word Rules", "Greedy", "Dictionary"]
+# values = [wordy_time, greedy_time, dict_time]
+# fig = plt.figure(figsize = (10, 5))
+# plt.bar(labels, values)
