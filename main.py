@@ -1,11 +1,6 @@
 #make object with 6x8 board
 import boards
 from typing import Dict, List, Optional, Set, Tuple
-# import time
-# import nltk
-# from nltk.corpus import words
-# import textblob
-# from textblob import Word
 
 #small board 
 # board = boards.small_board
@@ -98,7 +93,6 @@ class dfsSimple:
 
             for neighbor in neighbors[index]:
                 if neighbor not in path and neighbor not in self.found_indices:
-                    #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
                     new_path = path + [neighbor]  
                     self.recursion_count += 1
                     self.explore(neighbor, new_path, neighbors)
@@ -132,8 +126,6 @@ class WordRules(dfsSimple):
     def __init__(self, board, solution):
         super().__init__(board, solution) 
         self.visited_paths = set() #set to track explored paths
-        self.recursion_count = 0 #count recursions
-        self.incorrect_guesses = 0 #count incorrect guesses/invalid paths explored
         
     def wordRulesSolver(self):
         neighbors = dfsSimple.getNeighbors(self)
@@ -316,9 +308,6 @@ class WordRules(dfsSimple):
 class DictionarySearch(WordRules):
     def __init__(self, board, solution):
         super().__init__(board, solution)
-        # nltk.download('words')
-        # self.dictionary = words.words()
-        # self.dictionary.append("spork")
         word_file = open('words_alpha.txt', 'r')
         word_str = word_file.read()
         self.dictionary = word_str.split("\n")
@@ -327,8 +316,6 @@ class DictionarySearch(WordRules):
         # self.dictionary.append("spork")
         # self.dictionary.append("scifi")
         # self.dictionary.append("wingedthings")
-        self.recursion_count = 0 #recursion counter 
-        self.incorrect_guesses = 0 #incorrect guess counter 
 
     def dictionarySolver(self):
         '''
@@ -340,12 +327,9 @@ class DictionarySearch(WordRules):
             if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
                 if i not in self.found_indices:
                     self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
-                    # solution = self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
-                    # if solution:
-                    #     sol.append(solution)
             else:
                 break
-            
+        
         print("dict: You are done!")
         if self.solution_count >= SOLUTION_TOT:
             print("You solved the puzzle! Good job!")
@@ -360,14 +344,14 @@ class DictionarySearch(WordRules):
     def dictExplore(self, index: int, path: List[int], curr_prefix: str, neighbors: List[List[int]], words: List[str]) -> List[List[int]]:
         self.recursion_count += 1 #increment recursion counter 
         if not words:
-            return None
+            return
         
         if 4 <= len(path) <= MAX_LEN:
             if path in self.solution:
                 self.solution_count += 1
                 display_solution(self.solution_count, path)
                 self.found_indices += path
-                return path
+                return
             
         self.incorrect_guesses += 1 #increment incorrect guess counter
         for neighbor in neighbors[index]:
@@ -376,8 +360,8 @@ class DictionarySearch(WordRules):
                 new_prefix = curr_prefix + board[neighbor]
                 value = self.dictExplore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
                 if value:
-                    return value
-        return None
+                    return
+        return
     
 
 
@@ -388,44 +372,35 @@ class CustomSearch(DictionarySearch):
         
     def __init__(self, board, solution):
         super().__init__(board, solution)
-        self.recursion_count = 0 #recursion counter 
-        self.incorrect_guesses = 0 #incorrect guess counter 
 
     def customSolver(self):
         '''
         Another solving algorithm where we check each word against possible words in the dictionary.
         '''
+
         neighbors = self.getNeighbors()
-        for i in range(WIDTH*HEIGHT):
-            if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
-                if i not in self.found_indices:
-                    self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
-            else:
-                break
-            
-        print("The following words are not in the dictionary:")
+        sol = []
+
+        i = 0
+        while self.solution_count < SOLUTION_TOT and i<WIDTH*HEIGHT:
+            if i not in self.found_indices:
+                self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
+            i += 1
+
         if self.solution_count >= SOLUTION_TOT:
             print("You solved the puzzle! Good job!")
             return True
-        else:
-            #go through again, but not with 
-            print("entering second loop")
-            for i in range(WIDTH*HEIGHT):
-                if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
-                    if i not in self.found_indices:
-                        print("about to explore {i}")
-                        self.wordyExplore(i, [i], neighbors)
-                        # solution = self.wordyExplore(i, [i], neighbors)
-                        # if solution:
-                        #     sol.append(solution)
-                else:
-                    break
-            
-            if self.solution_count >= SOLUTION_TOT:
-                print("You solved the puzzle! Good job!")
-                return True
-            
-        
+
+        j=0
+        while self.solution_count < SOLUTION_TOT and j<WIDTH*HEIGHT:
+            if j not in self.found_indices:
+                self.wordyExplore(j, [j], neighbors)
+            j += 1
+
+
+        if self.solution_count >= SOLUTION_TOT:
+            print("You solved the puzzle! Good job!")
+            return True
         
         print("You did not solve the puzzle. Better luck next time :(")
         return False 

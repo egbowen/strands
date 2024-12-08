@@ -9,9 +9,9 @@ class TestClass:
         self.dfs_solver = main.dfsSimple(main.board, main.SOLUTION) 
         self.wordy_solver = main.WordRules(main.board, main.SOLUTION)  
         self.dict_solver = main.DictionarySearch(main.board, main.SOLUTION)
-        self.custom_solver = main.DictionarySearch(main.board, main.SOLUTION)
+        self.custom_solver = main.CustomSearch(main.board, main.SOLUTION)
 
-    def test(self, dfs=False, wordy=False, dicty=True, custom=True):
+    def test(self, dfs=True, wordy=True, dicty=True, custom=True):
         #run greedy
         if dfs:
             print("\n----------------------------------------\nGREEDY SOLVER")
@@ -53,7 +53,7 @@ class TestClass:
             print("\n----------------------------------------\nCUSTOM SOLVER")
             main.displayBoard(main.board)
             custom_starttime = time.time()
-            custom_solved = self.custom_solver.dictionarySolver()
+            custom_solved = self.custom_solver.customSolver()
             custom_recursion_count = self.custom_solver.recursion_count 
             custom_incorrect_guesses = self.custom_solver.incorrect_guesses 
             custom_endtime = time.time()
@@ -63,8 +63,8 @@ class TestClass:
 
 
         #final outcomes
-        # self.print_results("Greedy Solver", self.greedy_time, greedy_recursion_count, greedy_incorrect_guesses, dfs_solved)
-        # self.print_results("Word Rules Solver", self.wordy_time, wordy_recursions, wordy_incorrect_guesses, word_solved)
+        self.print_results("Greedy Solver", self.greedy_time, greedy_recursion_count, greedy_incorrect_guesses, dfs_solved)
+        self.print_results("Word Rules Solver", self.wordy_time, wordy_recursions, wordy_incorrect_guesses, word_solved)
         self.print_results("Dictionary Solver", self.dict_time, dict_recursion_count, dict_incorrect_guesses, dict_solved)
         self.print_results("Custom Solver", self.custom_time, custom_recursion_count, custom_incorrect_guesses, custom_solved)
     
