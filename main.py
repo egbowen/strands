@@ -7,11 +7,23 @@ from nltk.corpus import words
 import textblob
 from textblob import Word
 
-board = boards.stork_board #should not be global at some point 
-SOLUTION = boards.stork_solution #compare against this is global?
-SOLUTION_TOT = len(SOLUTION)
-WIDTH = boards.stork_width
-HEIGHT = boards.stork_height
+board = boards.small_board
+SOLUTION = boards.small_solution
+SOLUTION_TOT = len(SOLUTION) 
+WIDTH = boards.small_width
+HEIGHT = boards.small_height
+
+
+# board = boards.stork_board #should not be global at some point 
+# SOLUTION = boards.stork_solution #compare against this is global?
+# SOLUTION_TOT = len(SOLUTION)
+# WIDTH = boards.stork_width
+# HEIGHT = boards.stork_height
+# board = boards.day_11_19
+# SOLUTION = boards.solution_11_19
+# SOLUTION_TOT = len(SOLUTION) 
+# WIDTH = 6
+# HEIGHT = 8
 MAX_LEN = 11 #upping this number makes it take a long time
 
 SOLUTION_COUNT = 0
@@ -62,13 +74,11 @@ class dfsSimple:
         Returns:
             List[List[int]]: All possible paths explored from the current index
         '''
-        self.recursion_count += 1
 
         found_something = False
         
         while not found_something:
             if len(path) >= MAX_LEN:
-                self.incorrect_guesses += 1
                 return []
             
             #right now, this is checking every time we come across a path
@@ -80,10 +90,13 @@ class dfsSimple:
                     found_something = True
                     break
 
+            self.incorrect_guesses += 1
+
             for neighbor in neighbors[index]:
                 if neighbor not in path and neighbor not in self.found_indices:
                     #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
                     new_path = path + [neighbor]  
+                    self.recursion_count += 1
                     self.explore(neighbor, new_path, neighbors)
             found_something = True
         return []
@@ -170,9 +183,7 @@ class WordRules(dfsSimple):
                     found_something = True
                     break
             
-            prioritized_neighbors = sorted(neighbors[index], key=lambda n: self.highest_freq_letter(n, neighbors[n]), reverse=True) 
-            
-            for neighbor in prioritized_neighbors:
+            for neighbor in neighbors[index]:
                 if neighbor not in path and neighbor not in self.found_indices:
                     #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
                     new_path = path + [neighbor]
@@ -189,41 +200,6 @@ class WordRules(dfsSimple):
                         self.explore(neighbor, new_path, neighbors)
             found_something = True
         return []
-        
-        # self.recursion_count += 1 #incrememnt recursion counter 
-
-        # path_tuple = tuple(path) #convert path to tuple 
-        # if path_tuple in self.visited_paths: 
-        #     return #skip visited paths
-        # self.visited_paths.add(path_tuple) 
-
-        # if len(path) >= MAX_LEN: 
-        #     self.incorrect_guesses += 1 #paths exceeding max length are invalid
-        #     return   
-        
-        # #check if path is a solution
-        # if 4 <= len(path) <= MAX_LEN: 
-        #     if path in self.solution :
-        #         self.solution_count += 1
-        #         print(f"I found solution {self.solution_count}! Path: {path}")
-        #         self.found_indices += path
-        #         return
-        
-        # #explore neighbors 
-        # #for neighbor in sortend(neigbhors[index], key=lambda n: self.highest_freq_letter(index, neighbors[index]), reverse=True):
-        # for neighbor in sorted(neighbors[index], key=lambda n: self.highest_freq_letter(index, neighbors[index]), reverse=True): 
-        #     if neighbor not in path and neighbor not in self.found_indices: 
-        #         new_path = path + [neighbor] 
-
-        #         #preprocess at length 4
-        #         if len(new_path) == 4: 
-        #             if self.preprocess(new_path): 
-        #                 self.explore(neighbor, new_path, neighbors) 
-        #             else: 
-        #                 self.incorrect_guesses += 1 #pruned invalid path explored
-        #         else: 
-        #             self.explore(neighbor, new_path, neighbors)
-
     
     def preprocess(self, path: List[int]) -> bool:
         #use the rules we've made to preprocess the data 
@@ -359,6 +335,8 @@ class DictionarySearch(WordRules):
         self.dictionary.append("spork")
         self.dictionary.append("scifi")
         self.dictionary.append("wingedthings")
+        self.recursion_count = 0 #recursion counter 
+        self.incorrect_guesses = 0 #incorrect guess counter 
 
     def dictionarySolver(self):
         '''
@@ -387,6 +365,7 @@ class DictionarySearch(WordRules):
         return new_dict
 
     def explore(self, index: int, path: List[int], curr_prefix: str, neighbors: List[List[int]], words: List[str]) -> List[List[int]]:
+        self.recursion_count += 1 #increment recursion counter 
         if not words:
             return None
         if 4 <= len(path) <= MAX_LEN:
@@ -395,6 +374,7 @@ class DictionarySearch(WordRules):
                 print(f"I found solution {self.solution_count}! Path: {path}")
                 self.found_indices += path
                 return path
+        self.incorrect_guesses += 1 #increment incorrect guess counter
         for neighbor in neighbors[index]:
             if neighbor not in path and neighbor not in self.found_indices:
                 new_path = path + [neighbor]  
@@ -430,16 +410,16 @@ def displayBoard(board: List[str]):
 
 
 # run word rules  
-# print("WORD_RULES SOLVER")
-# displayBoard(board)
-# wordy_solver = WordRules(board, SOLUTION)  
-# wordy_starttime = time.time() 
-# word_solved = wordy_solver.wordRulesSolver() 
-# wordy_endtime = time.time() 
+print("WORD_RULES SOLVER")
+displayBoard(board)
+wordy_solver = WordRules(board, SOLUTION)  
+wordy_starttime = time.time() 
+word_solved = wordy_solver.wordRulesSolver() 
+wordy_endtime = time.time() 
 
-# wordy_time = wordy_endtime - wordy_starttime
-# wordy_recursions = wordy_solver.recursion_count 
-# wordy_incorrect_guesses = wordy_solver.incorrect_guesses
+wordy_time = wordy_endtime - wordy_starttime
+wordy_recursions = wordy_solver.recursion_count 
+wordy_incorrect_guesses = wordy_solver.incorrect_guesses
 
 
 
