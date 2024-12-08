@@ -340,7 +340,7 @@ class DictionarySearch(WordRules):
         for i in range(WIDTH*HEIGHT):
             if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
                 if i not in self.found_indices:
-                    solution = self.explore(i, [i], self.board[i], neighbors, self.dictionary)
+                    solution = self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
                     if solution:
                         sol.append(solution)
             else:
@@ -357,7 +357,7 @@ class DictionarySearch(WordRules):
         new_dict = list(filter(lambda x: x[:len(prefix)]==prefix.lower(), words))
         return new_dict
 
-    def explore(self, index: int, path: List[int], curr_prefix: str, neighbors: List[List[int]], words: List[str]) -> List[List[int]]:
+    def dictExplore(self, index: int, path: List[int], curr_prefix: str, neighbors: List[List[int]], words: List[str]) -> List[List[int]]:
         self.recursion_count += 1 #increment recursion counter 
         if not words:
             return None
@@ -374,11 +374,60 @@ class DictionarySearch(WordRules):
             if neighbor not in path and neighbor not in self.found_indices:
                 new_path = path + [neighbor]  
                 new_prefix = curr_prefix + board[neighbor]
-                value = self.explore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
+                value = self.dictExplore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
                 if value:
                     print(new_prefix)
                     return value
         return None
+    
+
+
+class CustomSearch(DictionarySearch):
+    # modified Dictionary Search
+        # solves for words not in dictionary
+        # preprocesses before looking for words in dictionary
+        
+    def __init__(self, board, solution):
+        super().__init__(board, solution)
+        # nltk.download('words')
+        # self.dictionary = words.words()
+        # self.dictionary.append("spork")
+        word_file = open('words_alpha.txt', 'r')
+        word_str = word_file.read()
+        self.dictionary = word_str.split("\n")
+        # adding words that are not present in the dictionary
+        # in the future we will account for these with a brute force search for them once all dictionary words are found
+        self.dictionary.append("spork")
+        self.dictionary.append("scifi")
+        self.dictionary.append("wingedthings")
+        self.recursion_count = 0 #recursion counter 
+        self.incorrect_guesses = 0 #incorrect guess counter 
+
+    def customSolver(self):
+        '''
+        Another solving algorithm where we check each word against possible words in the dictionary.
+        '''
+        neighbors = self.getNeighbors()
+        sol = []
+        for i in range(WIDTH*HEIGHT):
+            if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
+                if i not in self.found_indices:
+                    solution = self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
+                    if solution:
+                        sol.append(solution)
+            else:
+                break
+            
+        print("You are done!")
+        if self.solution_count >= SOLUTION_TOT:
+            print("You solved the puzzle! Good job!")
+            return True
+        
+        #here we should run through without the dict
+        
+        
+        print("You did not solve the puzzle. Better luck next time :(")
+        return False 
 
 
 ################################################

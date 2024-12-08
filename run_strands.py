@@ -2,8 +2,8 @@ import main
 import time
 
 #run greedy
-dfs = True
-wordy = True
+dfs = False
+wordy = False
 dicty = True
 
 if dfs:
@@ -46,7 +46,6 @@ if dicty:
     dict_time = dict_endtime - dict_starttime
 
 
-
 #final outcomes
 def print_results(solver_name, time_taken, recursions, incorrect_guesses, solved):
     """
@@ -66,6 +65,6 @@ def print_results(solver_name, time_taken, recursions, incorrect_guesses, solved
     print(f"    Solved            = {solved}\n")
 
 
-print_results("Greedy Solver", greedy_time, greedy_recursion_count, greedy_incorrect_guesses, dfs_solved)
-print_results("Word Rules Solver", wordy_time, wordy_recursions, wordy_incorrect_guesses, word_solved)
+# print_results("Greedy Solver", greedy_time, greedy_recursion_count, greedy_incorrect_guesses, dfs_solved)
+# print_results("Word Rules Solver", wordy_time, wordy_recursions, wordy_incorrect_guesses, word_solved)
 print_results("Dictionary Solver", dict_time, dict_recursion_count, dict_incorrect_guesses, dict_solved)
