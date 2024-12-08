@@ -49,11 +49,7 @@ class TestClass:
             self.dict_time = dict_endtime - dict_starttime
 
 
-
         #final outcomes
-        
-
-
         self.print_results("Greedy Solver", self.greedy_time, greedy_recursion_count, greedy_incorrect_guesses, dfs_solved)
         self.print_results("Word Rules Solver", self.wordy_time, wordy_recursions, wordy_incorrect_guesses, word_solved)
         self.print_results("Dictionary Solver", self.dict_time, dict_recursion_count, dict_incorrect_guesses, dict_solved)
