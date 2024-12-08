@@ -59,21 +59,21 @@ class TestClass:
         self.print_results("Dictionary Solver", self.dict_time, dict_recursion_count, dict_incorrect_guesses, dict_solved)
     
     def print_results(self, solver_name, time_taken, recursions, incorrect_guesses, solved):
-                """
-                Prints the results for a specific solver with aligned output.
+        """
+        Prints the results for a specific solver with aligned output.
 
-                Args:
-                    solver_name (str): Name of the solver (e.g., 'Greedy Solver').
-                    time_taken (float): Time taken by the solver in seconds.
-                    recursions (int): Number of recursions performed by the solver.
-                    incorrect_guesses (int): Number of incorrect guesses made by the solver.
-                    solved (bool): Whether the solver successfully solved the problem.
-                """
-                print(f"{solver_name}:")
-                print(f"    Time taken        = {time_taken:.2f} seconds")
-                print(f"    Recursions        = {recursions}")
-                print(f"    Incorrect Guesses = {incorrect_guesses}")
-                print(f"    Solved            = {solved}\n")
+        Args:
+            solver_name (str): Name of the solver (e.g., 'Greedy Solver').
+            time_taken (float): Time taken by the solver in seconds.
+            recursions (int): Number of recursions performed by the solver.
+            incorrect_guesses (int): Number of incorrect guesses made by the solver.
+            solved (bool): Whether the solver successfully solved the problem.
+        """
+        print(f"{solver_name}:")
+        print(f"    Time taken        = {time_taken:.2f} seconds")
+        print(f"    Recursions        = {recursions}")
+        print(f"    Incorrect Guesses = {incorrect_guesses}")
+        print(f"    Solved            = {solved}\n")
 
 tester = TestClass()
 tester.test()
