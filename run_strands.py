@@ -46,7 +46,7 @@ class TestClass:
             dict_incorrect_guesses = self.dict_solver.incorrect_guesses 
             dict_endtime = time.time()
 
-    dict_time = dict_endtime - dict_starttime
+            self.dict_time = dict_endtime - dict_starttime
 
 
 
@@ -73,5 +73,5 @@ class TestClass:
         print_results("Word Rules Solver", self.wordy_time, wordy_recursions, wordy_incorrect_guesses, word_solved)
         print_results("Dictionary Solver", self.dict_time, dict_recursion_count, dict_incorrect_guesses, dict_solved)
 
-# tester = TestClass()
-# tester.test()
+tester = TestClass()
+tester.test()
