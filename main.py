@@ -167,7 +167,6 @@ class WordRules(dfsSimple):
         Returns:
             List[List[int]]: All possible paths explored from the current index
         '''
-
         found_something = False
 
         while not found_something:

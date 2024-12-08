@@ -62,8 +62,6 @@ class TestClass:
                 """
                 Prints the results for a specific solver with aligned output.
 
-<<<<<<< HEAD
-=======
                 Args:
                     solver_name (str): Name of the solver (e.g., 'Greedy Solver').
                     time_taken (float): Time taken by the solver in seconds.
@@ -77,6 +75,5 @@ class TestClass:
                 print(f"    Incorrect Guesses = {incorrect_guesses}")
                 print(f"    Solved            = {solved}\n")
 
->>>>>>> 7368e6013be071dcf4558ca1faded34a883bd7ba
 tester = TestClass()
 tester.test()
