@@ -28,7 +28,7 @@ HEIGHT = boards.stork_height
 # WIDTH = 6
 # HEIGHT = 8
 
-MAX_LEN = 11#upping this number makes it take a long time
+MAX_LEN = 12 #upping this number makes it take a long time
 
 SOLUTION_COUNT = 0
 
@@ -89,7 +89,7 @@ class dfsSimple:
             if 4 <= len(path) <= MAX_LEN:
                 if path in self.solution :
                     self.solution_count += 1
-                    print(f"I found solution {self.solution_count}!\nPath: {path}")
+                    display_solution(self.solution_count, path)
                     self.found_indices += path
                     found_something = True
                     break
@@ -179,7 +179,7 @@ class WordRules(dfsSimple):
                         
                 if path in self.solution :
                     self.solution_count += 1
-                    print(f"I found solution {self.solution_count}!\n Path: {path}")
+                    display_solution(self.solution_count, path)
                     self.found_indices += path
                     found_something = True
                     break
@@ -194,12 +194,8 @@ class WordRules(dfsSimple):
                     #for len 4: preprocess!
                     if len(new_path) == 4: 
                         if self.preprocess(new_path):
-                            #print("got thru preprocessing")
-                            #we need to make it not keep going on this path :()
                             self.recursion_count += 1 #incrememnt recursion counter 
                             self.explore(neighbor, new_path, neighbors)
-                    #stop going down bad path
-                    #for rest of them: just do the thing
                     else:
                         self.explore(neighbor, new_path, neighbors)
             found_something = True
@@ -207,10 +203,6 @@ class WordRules(dfsSimple):
     
     def preprocess(self, path: List[int]) -> bool:
         #use the rules we've made to preprocess the data 
-        # we will probably do this at about 4 letters 
-        # if self.check_for_vowel(path) and self.check_bad_combos(path):
-
-        #threshold for combined letter frequency? could be an additional heursitic?
 
         # preprocessing rules
         if not self.check_for_vowel(path): # there is no vowel :(
@@ -222,10 +214,6 @@ class WordRules(dfsSimple):
         
         return True #After all checks(^^)
         
-        # if self.check_for_vowel(path):
-        #     return True
-        # return False
-    
     def best_next_choice():
         #chose the neighbor that is the most likely next solution
         pass
@@ -376,7 +364,7 @@ class DictionarySearch(WordRules):
         if 4 <= len(path) <= MAX_LEN:
             if path in self.solution:
                 self.solution_count += 1
-                print(f"I found solution {self.solution_count}!\nPath: {path}")
+                display_solution(self.solution_count, path)
                 self.found_indices += path
                 return path
             
@@ -390,6 +378,14 @@ class DictionarySearch(WordRules):
                     print(new_prefix)
                     return value
         return None
+
+
+################################################
+def display_solution(count, path):
+    word = ""
+    for i in path:
+        word += board[i]
+    print(f"I found solution {count}!\nWord: {word}\nPath: {path}")
 
 
 ##################################################
