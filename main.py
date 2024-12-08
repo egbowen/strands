@@ -143,7 +143,7 @@ class WordRules(dfsSimple):
             # self.explore(i, [i], neighbors)
             if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
                 if i not in self.found_indices:
-                    self.explore(i, [i], neighbors)
+                    self.wordyExplore(i, [i], neighbors)
             else:
                 break
             
@@ -154,7 +154,7 @@ class WordRules(dfsSimple):
         print("You did not solve the puzzle. Better luck next time")
         return False
         
-    def explore(self, index: int, path: List[int], neighbors: List[List[int]]) -> List[List[int]]:
+    def wordyExplore(self, index: int, path: List[int], neighbors: List[List[int]]) -> List[List[int]]:
         '''
         Recursive function to explore all possible paths
         Used in getDomains
@@ -194,10 +194,10 @@ class WordRules(dfsSimple):
                     if len(new_path) == 4: 
                         if self.preprocess(new_path):
                             self.recursion_count += 1 #incrememnt recursion counter 
-                            self.explore(neighbor, new_path, neighbors)
+                            self.wordyExplore(neighbor, new_path, neighbors)
                     else:
                         self.recursion_count += 1
-                        self.explore(neighbor, new_path, neighbors)
+                        self.wordyExplore(neighbor, new_path, neighbors)
             found_something = True
         return []
     
@@ -324,9 +324,9 @@ class DictionarySearch(WordRules):
         self.dictionary = word_str.split("\n")
         # adding words that are not present in the dictionary
         # in the future we will account for these with a brute force search for them once all dictionary words are found
-        self.dictionary.append("spork")
-        self.dictionary.append("scifi")
-        self.dictionary.append("wingedthings")
+        # self.dictionary.append("spork")
+        # self.dictionary.append("scifi")
+        # self.dictionary.append("wingedthings")
         self.recursion_count = 0 #recursion counter 
         self.incorrect_guesses = 0 #incorrect guess counter 
 
@@ -339,13 +339,14 @@ class DictionarySearch(WordRules):
         for i in range(WIDTH*HEIGHT):
             if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
                 if i not in self.found_indices:
-                    solution = self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
-                    if solution:
-                        sol.append(solution)
+                    self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
+                    # solution = self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
+                    # if solution:
+                    #     sol.append(solution)
             else:
                 break
             
-        print("You are done!")
+        print("dict: You are done!")
         if self.solution_count >= SOLUTION_TOT:
             print("You solved the puzzle! Good job!")
             return True
@@ -364,7 +365,6 @@ class DictionarySearch(WordRules):
         if 4 <= len(path) <= MAX_LEN:
             if path in self.solution:
                 self.solution_count += 1
-                print(f"I found solution {self.solution_count}! Path: {path}, Word: {curr_prefix}")
                 display_solution(self.solution_count, path)
                 self.found_indices += path
                 return path
@@ -388,17 +388,6 @@ class CustomSearch(DictionarySearch):
         
     def __init__(self, board, solution):
         super().__init__(board, solution)
-        # nltk.download('words')
-        # self.dictionary = words.words()
-        # self.dictionary.append("spork")
-        word_file = open('words_alpha.txt', 'r')
-        word_str = word_file.read()
-        self.dictionary = word_str.split("\n")
-        # adding words that are not present in the dictionary
-        # in the future we will account for these with a brute force search for them once all dictionary words are found
-        self.dictionary.append("spork")
-        self.dictionary.append("scifi")
-        self.dictionary.append("wingedthings")
         self.recursion_count = 0 #recursion counter 
         self.incorrect_guesses = 0 #incorrect guess counter 
 
@@ -407,22 +396,35 @@ class CustomSearch(DictionarySearch):
         Another solving algorithm where we check each word against possible words in the dictionary.
         '''
         neighbors = self.getNeighbors()
-        sol = []
         for i in range(WIDTH*HEIGHT):
             if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
                 if i not in self.found_indices:
-                    solution = self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
-                    if solution:
-                        sol.append(solution)
+                    self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
             else:
                 break
             
-        print("You are done!")
+        print("The following words are not in the dictionary:")
         if self.solution_count >= SOLUTION_TOT:
             print("You solved the puzzle! Good job!")
             return True
-        
-        #here we should run through without the dict
+        else:
+            #go through again, but not with 
+            print("entering second loop")
+            for i in range(WIDTH*HEIGHT):
+                if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
+                    if i not in self.found_indices:
+                        print("about to explore {i}")
+                        self.wordyExplore(i, [i], neighbors)
+                        # solution = self.wordyExplore(i, [i], neighbors)
+                        # if solution:
+                        #     sol.append(solution)
+                else:
+                    break
+            
+            if self.solution_count >= SOLUTION_TOT:
+                print("You solved the puzzle! Good job!")
+                return True
+            
         
         
         print("You did not solve the puzzle. Better luck next time :(")
@@ -434,7 +436,7 @@ def display_solution(count, path):
     word = ""
     for i in path:
         word += board[i]
-    print(f"I found solution {count}!\nWord: {word}\nPath: {path}")
+    print(f"\nI found solution {count}!\nWord: {word}\nPath: {path}")
 
 
 ##################################################
