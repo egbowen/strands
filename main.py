@@ -7,11 +7,11 @@ from nltk.corpus import words
 import textblob
 from textblob import Word
 
-board = boards.small_board #should not be global at some point 
-SOLUTION = boards.small_solution #compare against this is global?
+board = boards.stork_board #should not be global at some point 
+SOLUTION = boards.stork_solution #compare against this is global?
 SOLUTION_TOT = len(SOLUTION)
-WIDTH = boards.small_width
-HEIGHT = boards.small_height
+WIDTH = boards.stork_width
+HEIGHT = boards.stork_height
 MAX_LEN = 11 #upping this number makes it take a long time
 
 SOLUTION_COUNT = 0
@@ -306,13 +306,14 @@ class DictionarySearch(WordRules):
         # nltk.download('words')
         # self.dictionary = words.words()
         # self.dictionary.append("spork")
-        # self.dictionary.append("utensils")
-        # self.dictionary.append("chopsticks")
         word_file = open('words_alpha.txt', 'r')
         word_str = word_file.read()
         self.dictionary = word_str.split("\n")
+        # adding words that are not present in the dictionary
+        # in the future we will account for these with a brute force search for them once all dictionary words are found
         self.dictionary.append("spork")
         self.dictionary.append("scifi")
+        self.dictionary.append("wingedthings")
 
     def dictionarySolver(self):
         '''
@@ -353,7 +354,6 @@ class DictionarySearch(WordRules):
             if neighbor not in path and neighbor not in self.found_indices:
                 new_path = path + [neighbor]  
                 new_prefix = curr_prefix + board[neighbor]
-                # if valid or len(new_path) < 4:
                 value = self.explore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
                 if value:
                     print(new_prefix)
