@@ -87,5 +87,5 @@ class TestClass:
         print(f"    Incorrect Guesses = {incorrect_guesses}")
         print(f"    Solved            = {solved}\n")
 
-tester = TestClass(boards.stork_board, boards.stork_solution, boards.stork_width, boards.stork_height)
+tester = TestClass()
 tester.test()

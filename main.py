@@ -9,12 +9,12 @@ from typing import Dict, List, Optional, Set, Tuple
 # WIDTH = boards.small_width
 # HEIGHT = boards.small_height
 
-## BIG BOARD 1
-# board = boards.stork_board #should not be global at some point 
-# SOLUTION = boards.stork_solution #compare against this is global?
-# SOLUTION_TOT = len(SOLUTION)
-# WIDTH = boards.stork_width
-# HEIGHT = boards.stork_height
+# BIG BOARD 1
+board = boards.stork_board #should not be global at some point 
+SOLUTION = boards.stork_solution #compare against this is global?
+SOLUTION_TOT = len(SOLUTION)
+WIDTH = boards.stork_width
+HEIGHT = boards.stork_height
 
 ## BIG BOARD 2
 # board = boards.day_11_19
@@ -24,18 +24,19 @@ from typing import Dict, List, Optional, Set, Tuple
 # HEIGHT = 8
 
 # HUGE BOARD
-board = boards.cs_board
-SOLUTION = boards.cs_solution
-SOLUTION_TOT = len(SOLUTION)
-WIDTH = boards.cs_width
-HEIGHT = boards.cs_height
+# If using this board, change MAX_LEN to 13
+# board = boards.cs_board
+# SOLUTION = boards.cs_solution
+# SOLUTION_TOT = len(SOLUTION)
+# WIDTH = boards.cs_width
+# HEIGHT = boards.cs_height
 
-MAX_LEN = 13 #upping this number past 11 makes it take a long time
+MAX_LEN = 12 #upping this number past 11 makes it take a long time
 
 SOLUTION_COUNT = 0
 
 class dfsSimple:
-    def __init__(self, board, solution, width, height):
+    def __init__(self, board=board, solution=SOLUTION, width=WIDTH, height=HEIGHT):
         self.board = board  
         self.solution = solution
         self.width = width
