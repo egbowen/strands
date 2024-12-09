@@ -4,9 +4,6 @@ import boards
 
 class TestClass:
     def __init__(self, board=main.board, solution=main.SOLUTION, width=main.WIDTH, height=main.HEIGHT):
-        # self.dict_time = 0
-        # self.greedy_time = 0
-        # self.wordy_time = 0
         self.board = board
         self.solution = solution
         self.width = width

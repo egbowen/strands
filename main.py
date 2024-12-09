@@ -30,7 +30,7 @@ SOLUTION_TOT = len(SOLUTION)
 WIDTH = boards.cs_width
 HEIGHT = boards.cs_height
 
-MAX_LEN = 12 #upping this number makes it take a long time
+MAX_LEN = 13 #upping this number past 11 makes it take a long time
 
 SOLUTION_COUNT = 0
 
@@ -89,7 +89,7 @@ class dfsSimple:
             if len(path) >= MAX_LEN:
                 return []
             
-            #right now, this is checking every time we come across a path
+            #this is checking every time we come across a path
             if 4 <= len(path) <= MAX_LEN:
                 if path in self.solution :
                     self.solution_count += 1
@@ -212,10 +212,7 @@ class WordRules(dfsSimple):
             return False
         
         return True #After all checks(^^)
-        
-    def best_next_choice():
-        #chose the neighbor that is the most likely next solution
-        pass
+
         
     def check_for_vowel(self, path: List[int]) -> bool:
         """
@@ -315,11 +312,12 @@ class WordRules(dfsSimple):
 class DictionarySearch(dfsSimple):
     def __init__(self, board, solution, width, height):
         super().__init__(board, solution, width, height)
+        # word_file comes from GitHub repo linked in README
         word_file = open('words_alpha.txt', 'r')
         word_str = word_file.read()
         self.dictionary = word_str.split("\n")
-        # adding words that are not present in the dictionary
-        # in the future we will account for these with a brute force search for them once all dictionary words are found
+        # Adding words that are not present in the dictionary
+        # In the custom solver we will account for these with a brute force search for them once all dictionary words are found
         # self.dictionary.append("spork")
         # self.dictionary.append("scifi")
         # self.dictionary.append("wingedthings")
@@ -386,7 +384,6 @@ class CustomSearch(DictionarySearch, WordRules):
         '''
 
         neighbors = self.getNeighbors()
-        sol = []
 
         i = 0
         while self.solution_count < self.solution_tot and i<self.width*self.height:

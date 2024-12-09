@@ -1,13 +1,6 @@
 # Strands
-Liz Bowen, Elli Sterling, Abe Merino
-AI Final Project
-Solvers for the NYT game "Strands" for CSCI311: Artificial Intelligence 
+### Liz Bowen, Elli Sterling, Abe Merino
+### AI Final Project
+#### Solvers for the NYT game "Strands" for CSCI311: Artificial Intelligence with Prof. Linderman
 
-https://linguistics.stackexchange.com/questions/4082/impossible-bigrams-in-the-english-language
-https://pi.math.cornell.edu/~mec/2003-2004/cryptography/subs/frequencies.html
-    # letter frequency in the english language
-
-
-Liz thoughts: maybe we check for all in len 8, then when we have found say 4-5 solutions, we up that size with the more limited data. 
-
-Word textfile comes from this github repo: https://github.com/dwyl/english-words
+Our project aims to assess the accuracy of heuristic based solvers in comparison to a simple depth first search (DFS) solver for the NYT game Strands. Strands is a word search game in which you are given a clue and a board with words that pertain to that clue. Each guess is verified as correct or incorrect. Before we guess, we verify each word against a list of all English words. If that search fails, we run a brute force search to find the rest of the words (bigrams or unusual words like 'spork'). The textfile of the list of words comes from this GitHub repo: https://github.com/dwyl/english-words.
