@@ -85,5 +85,5 @@ class TestClass:
         print(f"    Incorrect Guesses = {incorrect_guesses}")
         print(f"    Solved            = {solved}\n")
 
-tester = TestClass()
-tester.test()
+# tester = TestClass()
+# tester.test()

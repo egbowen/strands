@@ -125,7 +125,6 @@ class dfsSimple:
 class WordRules(dfsSimple):
     def __init__(self, board, solution):
         super().__init__(board, solution) 
-        self.visited_paths = set() #set to track explored paths
         
     def wordRulesSolver(self):
         neighbors = dfsSimple.getNeighbors(self)
@@ -305,7 +304,7 @@ class WordRules(dfsSimple):
     
     
     
-class DictionarySearch(WordRules):
+class DictionarySearch(dfsSimple):
     def __init__(self, board, solution):
         super().__init__(board, solution)
         word_file = open('words_alpha.txt', 'r')
@@ -365,7 +364,7 @@ class DictionarySearch(WordRules):
     
 
 
-class CustomSearch(DictionarySearch):
+class CustomSearch(DictionarySearch, WordRules):
     # modified Dictionary Search
         # solves for words not in dictionary
         # preprocesses before looking for words in dictionary
