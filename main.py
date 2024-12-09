@@ -10,11 +10,11 @@ from typing import Dict, List, Optional, Set, Tuple
 # HEIGHT = boards.small_height
 
 ## BIG BOARD 1
-board = boards.stork_board #should not be global at some point 
-SOLUTION = boards.stork_solution #compare against this is global?
-SOLUTION_TOT = len(SOLUTION)
-WIDTH = boards.stork_width
-HEIGHT = boards.stork_height
+# board = boards.stork_board #should not be global at some point 
+# SOLUTION = boards.stork_solution #compare against this is global?
+# SOLUTION_TOT = len(SOLUTION)
+# WIDTH = boards.stork_width
+# HEIGHT = boards.stork_height
 
 ## BIG BOARD 2
 # board = boards.day_11_19
@@ -23,14 +23,23 @@ HEIGHT = boards.stork_height
 # WIDTH = 6
 # HEIGHT = 8
 
+# HUGE BOARD
+board = boards.cs_board
+SOLUTION = boards.cs_solution
+SOLUTION_TOT = len(SOLUTION)
+WIDTH = boards.cs_width
+HEIGHT = boards.cs_height
+
 MAX_LEN = 12 #upping this number makes it take a long time
 
 SOLUTION_COUNT = 0
 
 class dfsSimple:
-    def __init__(self, board, solution):
+    def __init__(self, board, solution, width, height):
         self.board = board  
         self.solution = solution
+        self.width = width
+        self.height = height
         self.solution_tot = len(solution)
         self.solution_count = 0
         self.recursion_count = 0
@@ -45,16 +54,16 @@ class dfsSimple:
         neighbors = self.getNeighbors() #letters on each side (should we prune this as we fill in?) 
         
         #run the tests
-        for i in range(WIDTH*HEIGHT):
+        for i in range(self.width*self.height):
             # self.explore(i, [i], neighbors)
-            if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
+            if (self.solution_count < self.solution_tot): #stops when we find all solutions
                 if i not in self.found_indices:
                     self.explore(i, [i], neighbors)
             else:
                 break
             
         print("You are done!")
-        if self.solution_count >= SOLUTION_TOT:
+        if self.solution_count >= self.solution_tot:
             print("You solved the puzzle! Good job!")
             return True
         print("You did not solve the puzzle. Better luck next time")
@@ -84,7 +93,7 @@ class dfsSimple:
             if 4 <= len(path) <= MAX_LEN:
                 if path in self.solution :
                     self.solution_count += 1
-                    display_solution(self.solution_count, path)
+                    display_solution(self.solution_count, path, self.board)
                     self.found_indices += path
                     found_something = True
                     break
@@ -100,19 +109,19 @@ class dfsSimple:
         return []
         
     def getNeighbors(self):
-        moves = [-1, 1, -WIDTH, WIDTH, -WIDTH - 1, -WIDTH + 1, WIDTH - 1, WIDTH + 1]
+        moves = [-1, 1, -self.width, self.width, -self.width - 1, -self.width + 1, self.width - 1, self.width + 1]
         neighbors = []
         
-        for i in range(WIDTH * HEIGHT):
-            row = i // WIDTH
-            col = i % WIDTH
+        for i in range(self.width * self.height):
+            row = i // self.width
+            col = i % self.width
             single_neighbor = []
 
             for m in moves:
                 neighbor = i + m
-                if 0 <= neighbor < WIDTH * HEIGHT:
-                    neighbor_row = neighbor // WIDTH
-                    neighbor_col = neighbor % WIDTH
+                if 0 <= neighbor < self.width * self.height:
+                    neighbor_row = neighbor // self.width
+                    neighbor_col = neighbor % self.width
                     
                     # Only add neighbors where row and column are within +-1 range of current
                     if abs(neighbor_row - row) <= 1 and abs(neighbor_col - col) <= 1:
@@ -123,23 +132,23 @@ class dfsSimple:
         return neighbors
     
 class WordRules(dfsSimple):
-    def __init__(self, board, solution):
-        super().__init__(board, solution) 
+    def __init__(self, board, solution, width, height):
+        super().__init__(board, solution, width, height) 
         
     def wordRulesSolver(self):
         neighbors = dfsSimple.getNeighbors(self)
     
         #run the tests
-        for i in range(WIDTH*HEIGHT):
+        for i in range(self.width*self.height):
             # self.explore(i, [i], neighbors)
-            if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
+            if (self.solution_count < self.solution_tot): #stops when we find all solutions
                 if i not in self.found_indices:
                     self.wordyExplore(i, [i], neighbors)
             else:
                 break
             
         print("You are done!")
-        if self.solution_count >= SOLUTION_TOT:
+        if self.solution_count >= self.solution_tot:
             print("You solved the puzzle! Good job!")
             return True
         print("You did not solve the puzzle. Better luck next time")
@@ -169,7 +178,7 @@ class WordRules(dfsSimple):
                         
                 if path in self.solution :
                     self.solution_count += 1
-                    display_solution(self.solution_count, path)
+                    display_solution(self.solution_count, path, self.board)
                     self.found_indices += path
                     found_something = True
                     break
@@ -178,7 +187,6 @@ class WordRules(dfsSimple):
             
             for neighbor in neighbors[index]:
                 if neighbor not in path and neighbor not in self.found_indices:
-                    #print(f"Exploring neighbor {neighbor} from index {index} with path {path}") 
                     new_path = path + [neighbor]
                     
                     #for len 4: preprocess!
@@ -231,7 +239,7 @@ class WordRules(dfsSimple):
             for vowel in vowels:
                 # print("vowel: ", vowel)
                 # print("letter: ", board[i])
-                if board[i].lower() == vowel:
+                if self.board[i].lower() == vowel:
                     return True  
         return False
     
@@ -262,7 +270,7 @@ class WordRules(dfsSimple):
             'qw', 'vh', 'wx', 'zg'
         }
         for i in range(len(path) - 1):
-            letter_pair = board[path[i]] + board[path[i + 1]]
+            letter_pair = self.board[path[i]] + self.board[path[i + 1]]
             
             if letter_pair in two_letter_combos:
                 return False
@@ -291,9 +299,9 @@ class WordRules(dfsSimple):
         }
         
         best_neighbor = my_neighbors[0]
-        highest_freq = letter_freq.get(board[best_neighbor], 0)
+        highest_freq = letter_freq.get(self.board[best_neighbor], 0)
         for neighbor in my_neighbors:
-            letter = board[neighbor]
+            letter = self.board[neighbor]
             freq = letter_freq.get(letter, 0)
             
             if freq > highest_freq:
@@ -305,8 +313,8 @@ class WordRules(dfsSimple):
     
     
 class DictionarySearch(dfsSimple):
-    def __init__(self, board, solution):
-        super().__init__(board, solution)
+    def __init__(self, board, solution, width, height):
+        super().__init__(board, solution, width, height)
         word_file = open('words_alpha.txt', 'r')
         word_str = word_file.read()
         self.dictionary = word_str.split("\n")
@@ -322,15 +330,15 @@ class DictionarySearch(dfsSimple):
         '''
         neighbors = self.getNeighbors()
         sol = []
-        for i in range(WIDTH*HEIGHT):
-            if (self.solution_count < SOLUTION_TOT): #stops when we find all solutions
+        for i in range(self.width*self.height):
+            if (self.solution_count < self.solution_tot): #stops when we find all solutions
                 if i not in self.found_indices:
                     self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
             else:
                 break
         
         print("dict: You are done!")
-        if self.solution_count >= SOLUTION_TOT:
+        if self.solution_count >= self.solution_tot:
             print("You solved the puzzle! Good job!")
             return True
         print("You did not solve the puzzle. Better luck next time :(")
@@ -348,7 +356,7 @@ class DictionarySearch(dfsSimple):
         if 4 <= len(path) <= MAX_LEN:
             if path in self.solution:
                 self.solution_count += 1
-                display_solution(self.solution_count, path)
+                display_solution(self.solution_count, path, self.board)
                 self.found_indices += path
                 return
             
@@ -356,7 +364,7 @@ class DictionarySearch(dfsSimple):
         for neighbor in neighbors[index]:
             if neighbor not in path and neighbor not in self.found_indices:
                 new_path = path + [neighbor]  
-                new_prefix = curr_prefix + board[neighbor]
+                new_prefix = curr_prefix + self.board[neighbor]
                 value = self.dictExplore(neighbor, new_path, new_prefix, neighbors, self.filter_words(new_prefix, words))
                 if value:
                     return
@@ -369,8 +377,8 @@ class CustomSearch(DictionarySearch, WordRules):
         # solves for words not in dictionary
         # preprocesses before looking for words in dictionary
         
-    def __init__(self, board, solution):
-        super().__init__(board, solution)
+    def __init__(self, board, solution, width, height):
+        super().__init__(board, solution, width, height)
 
     def customSolver(self):
         '''
@@ -381,23 +389,23 @@ class CustomSearch(DictionarySearch, WordRules):
         sol = []
 
         i = 0
-        while self.solution_count < SOLUTION_TOT and i<WIDTH*HEIGHT:
+        while self.solution_count < self.solution_tot and i<self.width*self.height:
             if i not in self.found_indices:
                 self.dictExplore(i, [i], self.board[i], neighbors, self.dictionary)
             i += 1
 
-        if self.solution_count >= SOLUTION_TOT:
+        if self.solution_count >= self.solution_tot:
             print("You solved the puzzle! Good job!")
             return True
 
         j=0
-        while self.solution_count < SOLUTION_TOT and j<WIDTH*HEIGHT:
+        while self.solution_count < self.solution_tot and j<self.width*self.height:
             if j not in self.found_indices:
                 self.wordyExplore(j, [j], neighbors)
             j += 1
 
 
-        if self.solution_count >= SOLUTION_TOT:
+        if self.solution_count >= self.solution_tot:
             print("You solved the puzzle! Good job!")
             return True
         
@@ -406,7 +414,7 @@ class CustomSearch(DictionarySearch, WordRules):
 
 
 ################################################
-def display_solution(count, path):
+def display_solution(count, path, board):
     word = ""
     for i in path:
         word += board[i]
@@ -414,14 +422,14 @@ def display_solution(count, path):
 
 
 ##################################################
-def displayBoard(board: List[str]): 
+def displayBoard(board: List[str], width, height): 
     '''
     function to print board and display letters
     '''
     print("\nCurrent Board:") 
-    print("-" * (WIDTH * 4 + 1)) #horizontal border 
-    for i in range(HEIGHT): 
-        row = board[i * WIDTH:(i + 1) * WIDTH] 
+    print("-" * (width * 4 + 1)) #horizontal border 
+    for i in range(height): 
+        row = board[i * width:(i + 1) * width] 
         print("| " + " | ".join(row) + " |") # rows with letters 
-        print("_" * (WIDTH * 4 + 1)) #horizontal border
+        print("_" * (width * 4 + 1)) #horizontal border
 

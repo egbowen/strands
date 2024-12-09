@@ -1,21 +1,26 @@
 import main
 import time
+import boards
 
 class TestClass:
-    def __init__(self):
-        self.dict_time = 0
-        self.greedy_time = 0
-        self.wordy_time = 0
-        self.dfs_solver = main.dfsSimple(main.board, main.SOLUTION) 
-        self.wordy_solver = main.WordRules(main.board, main.SOLUTION)  
-        self.dict_solver = main.DictionarySearch(main.board, main.SOLUTION)
-        self.custom_solver = main.CustomSearch(main.board, main.SOLUTION)
+    def __init__(self, board=main.board, solution=main.SOLUTION, width=main.WIDTH, height=main.HEIGHT):
+        # self.dict_time = 0
+        # self.greedy_time = 0
+        # self.wordy_time = 0
+        self.board = board
+        self.solution = solution
+        self.width = width
+        self.height = height
+        self.dfs_solver = main.dfsSimple(board, solution, width, height) 
+        self.wordy_solver = main.WordRules(board, solution, width, height)  
+        self.dict_solver = main.DictionarySearch(board, solution, width, height)
+        self.custom_solver = main.CustomSearch(board, solution, width, height)
 
     def test(self, dfs=True, wordy=True, dicty=True, custom=True):
         #run greedy
         if dfs:
             print("\n----------------------------------------\nGREEDY SOLVER")
-            main.displayBoard(main.board)
+            main.displayBoard(self.board, self.width, self.height)
             greedy_starttime = time.time()  
             dfs_solved = self.dfs_solver.greedySolver() 
             greedy_recursion_count = self.dfs_solver.recursion_count
@@ -28,7 +33,7 @@ class TestClass:
         # run word rules
         if wordy:  
             print("\n----------------------------------------\nWORD_RULES SOLVER")
-            main.displayBoard(main.board)
+            main.displayBoard(self.board, self.width, self.height)
             wordy_starttime = time.time() 
             word_solved = self.wordy_solver.wordRulesSolver() 
             wordy_recursions = self.wordy_solver.recursion_count
@@ -40,7 +45,7 @@ class TestClass:
         #run dictionary
         if dicty:
             print("\n----------------------------------------\nDICTIONARY SOLVER")
-            main.displayBoard(main.board)
+            main.displayBoard(self.board, self.width, self.height)
             dict_starttime = time.time()
             dict_solved = self.dict_solver.dictionarySolver()
             dict_recursion_count = self.dict_solver.recursion_count 
@@ -51,7 +56,7 @@ class TestClass:
             
         if custom:
             print("\n----------------------------------------\nCUSTOM SOLVER")
-            main.displayBoard(main.board)
+            main.displayBoard(self.board, self.width, self.height)
             custom_starttime = time.time()
             custom_solved = self.custom_solver.customSolver()
             custom_recursion_count = self.custom_solver.recursion_count 
@@ -85,5 +90,5 @@ class TestClass:
         print(f"    Incorrect Guesses = {incorrect_guesses}")
         print(f"    Solved            = {solved}\n")
 
-# tester = TestClass()
-# tester.test()
+tester = TestClass(boards.stork_board, boards.stork_solution, boards.stork_width, boards.stork_height)
+tester.test()

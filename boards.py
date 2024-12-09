@@ -71,6 +71,7 @@ stork_width = 6
 stork_height = 8
 
 #################################################################
+# Max size needs to be changed to 13 for this board to be solved!!
 cs_board =  [ 
     "T", "L", "U", "F", "E", "D", "O", "C", 
     "O", "R", "A", "G", "R", "R", "R", "E", 
@@ -92,10 +93,3 @@ cs_solution = [ [16, 9, 8, 17, 24, 25, 32],  #program
 cs_clue = "tip tap type"
 cs_width = 8
 cs_height = 7
-
-
-
-##code to check the boards
-# for i in cs_solution:
-#     for num in i:
-#         print(cs_board[num])
