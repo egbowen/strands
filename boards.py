@@ -70,10 +70,32 @@ stork_clue = "soaring"
 stork_width = 6
 stork_height = 8
 
+#################################################################
+cs_board =  [ 
+    "T", "L", "U", "F", "E", "D", "O", "C", 
+    "O", "R", "A", "G", "R", "R", "R", "E", 
+    "P", "G", "E", "S", "O", "E", "R", "M", 
+    "R", "A", "T", "E", "R", "T", "Y", "T",
+    "M", "P", "U", "A", "M", "O", "H", "P", 
+    "O", "M", "C", "N", "N", "L", "A", "R", 
+    "C", "H", "I", "E", "A", "M", "W", "E" ]
+
+cs_solution = [ [16, 9, 8, 17, 24, 25, 32],  #program
+                [19, 18, 17, 3, 10, 2, 1, 0],  #segfault
+                [7, 6, 5, 4],  # code
+                [15, 14, 13, 20, 12],  #error
+                [48, 40, 41, 33, 34, 26, 27, 28, 29, 21, 22, 23], #computer term
+                [39, 30, 31, 38, 37, 44], #python
+                [36, 35, 42, 49, 50, 43, 51], #machine
+                [53, 52, 45, 54, 46, 47, 55] ] #malware
+
+cs_clue = "tip tap type"
+cs_width = 8
+cs_height = 7
 
 
 
-# code to check the boards
-# for i in solution_11_19:
+##code to check the boards
+# for i in cs_solution:
 #     for num in i:
-#         print(day_11_19[num])
+#         print(cs_board[num])
